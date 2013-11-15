@@ -1,8 +1,9 @@
 config.cfg
-*.idea
+.idea/*
 
 # Compiled source #
 ###################
+*.pyc
 *.com
 *.class
 *.dll

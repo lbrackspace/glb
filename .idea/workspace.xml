@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9db90033-5ca1-4b83-bd5e-9b3586e08524" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/api/contrib/db/0-1.sql" afterPath="$PROJECT_DIR$/contrib/db/0-1.sql" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/api/contrib/xsd/glbs.xsd" afterPath="$PROJECT_DIR$/contrib/xsd/glbs.xsd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="glb.iws" />
@@ -39,16 +38,7 @@
       <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="5" selection-start="275" selection-end="275" vertical-scroll-proportion="0.78054297" vertical-offset="0" max-vertical-offset="442">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="config.cfg" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/config.cfg">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="73" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150">
+            <state line="1" column="7" selection-start="18" selection-end="18" vertical-scroll-proportion="0.032258064" vertical-offset="0" max-vertical-offset="465">
               <folding />
             </state>
           </provider>
@@ -674,14 +664,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/config.cfg">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="73" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150">
+        <state line="4" column="12" selection-start="73" selection-end="73" vertical-scroll-proportion="0.13574661" vertical-offset="0" max-vertical-offset="442">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="5" selection-start="275" selection-end="275" vertical-scroll-proportion="0.78054297" vertical-offset="0" max-vertical-offset="442">
+        <state line="1" column="7" selection-start="18" selection-end="18" vertical-scroll-proportion="0.032258064" vertical-offset="0" max-vertical-offset="465">
           <folding />
         </state>
       </provider>
