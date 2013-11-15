@@ -1,0 +1,98 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="glbs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="glb"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="glb">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="nodes" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute type="xs:int" name="id"/>
+            <xs:attribute type="xs:int" name="account_id"/>
+            <xs:attribute type="xs:string" name="name" use="required"/>
+            <xs:attribute type="xs:string" name="cname"/>
+            <xs:attribute type="statusEnum" name="status"/>
+            <xs:attribute type="algorithmEnum" name="algorithm" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="nodes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="node"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="node">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="monitor" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="nameServers" minOccurs="1" maxOccurs="1"/>
+            </xs:sequence>
+            <xs:attribute type="xs:int" name="id"/>
+            <xs:attribute type="xs:string" name="ipAddress" use="required"/>
+            <xs:attribute type="xs:string" name="type"/>
+            <xs:attribute type="xs:string" name="status"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="monitor">
+        <xs:complexType>
+            <xs:attribute ref="interval" use="required"/>
+            <xs:attribute ref="threshold" use="required"/>
+        </xs:complexType>
+    </xs:element>
+     <xs:element name="nameServers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="nameServer"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="nameServer">
+        <xs:complexType>
+            <xs:attribute type="xs:int" name="id"/>
+            <xs:attribute type="xs:string" name="name" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="algorithmEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="RANDOM"/>
+            <xs:enumeration value="GEOIP"/>
+            <xs:enumeration value="WEIGHTED"/>
+            <xs:enumeration value="LATENCY"/>
+            <xs:enumeration value="POLICY"/>
+            <xs:enumeration value="PERFORMANCE"/>
+            <xs:enumeration value="NONE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="algorithmEnum" type="algorithmEnum"/>
+    <xs:simpleType name="statusEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ACTIVE"/>
+            <xs:enumeration value="BUILD"/>
+            <xs:enumeration value="DELETED"/>
+            <xs:enumeration value="PENDING_DELETE"/>
+            <xs:enumeration value="PENDING_UPDATE"/>
+            <xs:enumeration value="QUEUE"/>
+            <xs:enumeration value="NONE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="statusEnum" type="statusEnum"/>
+    <xs:attribute name="interval">
+        <xs:simpleType>
+            <xs:restriction base="xs:integer">
+                <xs:pattern value="^([1-9]|[1-9]\d|100)$"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="threshold">
+        <xs:simpleType>
+            <xs:restriction base="xs:integer">
+                <xs:pattern value="^([1-9]|[1-9]\d|100)$"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+</xs:schema>
