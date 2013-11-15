@@ -1,0 +1,6 @@
+{
+    "glb": {
+        "name": "test33",
+        "algorithm": "RANDOM"
+    }
+}
