@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9db90033-5ca1-4b83-bd5e-9b3586e08524" name="Default" comment="" />
+    <list default="true" id="9db90033-5ca1-4b83-bd5e-9b3586e08524" name="Default" comment="">
+      <change type="MOVED" beforePath="$PROJECT_DIR$/api/contrib/db/0-1.sql" afterPath="$PROJECT_DIR$/contrib/db/0-1.sql" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/api/contrib/xsd/glbs.xsd" afterPath="$PROJECT_DIR$/contrib/xsd/glbs.xsd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="glb.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -23,10 +27,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="monitorservice.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="monitorservice.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/services/monitorservice.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="13" selection-start="612" selection-end="612" vertical-scroll-proportion="0.61085975" vertical-offset="0" max-vertical-offset="442">
+            <state line="21" column="13" selection-start="612" selection-end="612" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="23" column="5" selection-start="275" selection-end="275" vertical-scroll-proportion="0.78054297" vertical-offset="0" max-vertical-offset="442">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.cfg" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/config.cfg">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="73" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150">
               <folding />
             </state>
           </provider>
@@ -90,26 +112,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="base.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/persistence/base.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="52" selection-start="197" selection-end="219" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="base.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/models/base.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="0" selection-start="140" selection-end="140" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="420">
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FindManager">
@@ -128,8 +130,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/api/services/glbservice.py" />
-        <option value="$PROJECT_DIR$/api/models/glb.py" />
         <option value="$PROJECT_DIR$/api/persistence/basepersistence.py" />
         <option value="$PROJECT_DIR$/api/services/__init__.py" />
         <option value="$PROJECT_DIR$/api/services/nodeservice.py" />
@@ -144,6 +144,8 @@
         <option value="$PROJECT_DIR$/api/__init__.py" />
         <option value="$PROJECT_DIR$/api/resources/base.py" />
         <option value="$PROJECT_DIR$/api/services/monitorservice.py" />
+        <option value="$PROJECT_DIR$/contrib/config/example.config.cfg" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -291,9 +293,9 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/api/persistence" />
       <recent name="$PROJECT_DIR$/api" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/api/resources" />
       <recent name="$PROJECT_DIR$/db" />
     </key>
@@ -528,7 +530,7 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3292517" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3292517" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -564,33 +566,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/api/models/glb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="36" selection-start="926" selection-end="926" vertical-scroll-proportion="0.6451613" vertical-offset="120" max-vertical-offset="585">
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/models/node.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="8" selection-start="352" selection-end="356" vertical-scroll-proportion="0.19354838" vertical-offset="105" max-vertical-offset="645">
-          <folding>
-            <element signature="e#0#11#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/persistence/nodepersistence.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="6" selection-start="551" selection-end="551" vertical-scroll-proportion="0.6606335" vertical-offset="68" max-vertical-offset="510">
-          <folding>
-            <element signature="e#0#27#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/persistence/monitorpersistence.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="16" column="13" selection-start="379" selection-end="379" vertical-scroll-proportion="0.4516129" vertical-offset="0" max-vertical-offset="465">
@@ -685,7 +660,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/services/monitorservice.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="13" selection-start="612" selection-end="612" vertical-scroll-proportion="0.61085975" vertical-offset="0" max-vertical-offset="442">
+        <state line="21" column="13" selection-start="612" selection-end="612" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contrib/config/example.config.cfg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="12" selection-start="73" selection-end="73" vertical-scroll-proportion="0.13574661" vertical-offset="0" max-vertical-offset="442">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/config.cfg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="73" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="5" selection-start="275" selection-end="275" vertical-scroll-proportion="0.78054297" vertical-offset="0" max-vertical-offset="442">
           <folding />
         </state>
       </provider>
