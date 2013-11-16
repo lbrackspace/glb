@@ -1,6 +1,7 @@
-import base
-from sqlalchemy import Table, Column, Integer, ForeignKey, String
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+
+from api.models.persistence import base
 
 
 class GlobalLoadbalancerModel(base.Base, base.BaseModel):
@@ -26,8 +27,12 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
         self.nodes = nodes
 
     def to_dict(self):
+        nodes_dict = [item.node.to_dict() for item in self.nodes
+                      if item is not None and item.node is not None]
+
         glb_dict = {'id': self.id_, 'name': self.name, 'cname': self.cname,
-                    'status': self.status, 'algorithm': self.algorithm}
+                    'status': self.status, 'algorithm': self.algorithm,
+                    'nodes': nodes_dict}
         return glb_dict
 
     def __repr__(self):

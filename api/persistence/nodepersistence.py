@@ -1,6 +1,5 @@
-from api.models import base
+from api.models.persistence import base, node
 from api.persistence.base import BaseService
-from api.models import glb, node, monitor, nameservers
 
 
 class NodesPersistence(BaseService):
@@ -10,8 +9,11 @@ class NodesPersistence(BaseService):
         node_list = [n.to_dict() for n in nodes]
         return node_list
 
-    def create(self, account_id, name, algorithm):
-        n = {"test":"TEST"}
+    def create(self, glb_id, ip_address, type):
+        n = node.NodeModel(glb_id=glb_id, ip_address=ip_address, type=type)
+
+        base.db.session.add(n)
+        base.db.session.commit()
         return n
 
 

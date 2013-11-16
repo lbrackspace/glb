@@ -1,6 +1,5 @@
-from api.models import base
+from api.models.persistence import base, glb
 from api.persistence.base import BaseService
-from api.models import glb, node, monitor, nameservers
 
 
 class GlobalLoadbalancersPersistence(BaseService):

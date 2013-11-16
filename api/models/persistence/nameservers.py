@@ -1,5 +1,6 @@
-import base
-from sqlalchemy import Table, Column, Integer, ForeignKey, String
+from sqlalchemy import Column, Integer
+
+from api.models.persistence import base
 
 
 class NameserverModel(base.Base, base.BaseModel):
@@ -10,14 +11,12 @@ class NameserverModel(base.Base, base.BaseModel):
 
     id_ = Column('id', Integer, primary_key=True)
     name = Column(Integer(32))
-    node_id = Column(Integer, ForeignKey('node.id'))
 
-    def __init__(self, name=None, node_id=None):
+    def __init__(self, name=None):
         self.name = name
-        self.node_id = node_id
 
     def to_dict(self):
-        ns_dict = {'id': self.id_, 'name': self.name, 'node_id': self.node_id}
+        ns_dict = {'id': self.id_, 'name': self.name}
         return ns_dict
 
     def __repr__(self):

@@ -1,4 +1,4 @@
-from api.models import base, glb, node, monitor, algorithm, status, nameservers
+from api.models.persistence import nameservers, status, node, base, algorithm, monitor, glb
 
 
 class BaseService(object):

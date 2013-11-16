@@ -1,6 +1,5 @@
-from api.models import base
+from api.models.persistence import base, monitor
 from api.persistence.base import BaseService
-from api.models import glb, node, monitor, nameservers
 
 
 class MonitorPersistence(BaseService):
@@ -9,8 +8,11 @@ class MonitorPersistence(BaseService):
         m = monitor.MonitorModel.query.filter_by(id_=id).first()
         return m
 
-    def create(self, account_id, monitor):
-        m = {"test":"TEST"}
+    def create(self, node_id, interval, threshold):
+        m = monitor.MonitorModel(node_id=node_id, interval=interval, threshold=threshold)
+
+        base.db.session.add(m)
+        base.db.session.commit()
         return m
 
 

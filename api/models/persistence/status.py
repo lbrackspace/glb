@@ -1,13 +1,14 @@
-import base
-from sqlalchemy import Table, Column, Integer, ForeignKey, String
+from sqlalchemy import Column, Integer, String
+
+from api.models.persistence import base
 
 
-class AlgorithmModel(base.Base, base.BaseModel):
+class StatusModel(base.Base, base.BaseModel):
     #This model may not be needed
-    __tablename__ = 'glb_algorithm'
+    __tablename__ = 'glb_status'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'glb_algorithm'
+    TAG = 'glb_status'
 
     id_ = Column('id', Integer, primary_key=True)
     name = Column(String(32))
@@ -18,9 +19,9 @@ class AlgorithmModel(base.Base, base.BaseModel):
         self.description = description
 
     def to_dict(self):
-        algo_dict = {'id': self.id_, 'name': self.name,
+        stat_dict = {'id': self.id_, 'name': self.name,
                      'description': self.description}
-        return algo_dict
+        return stat_dict
 
     def __repr__(self):
         return '<Algorithm %r>' % self.name

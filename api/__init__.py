@@ -1,8 +1,10 @@
-from models import base
+import ConfigParser
+
 from flask import Flask
+
+from api.models.persistence import base
 from flask.ext.restful import Resource, Api
 
-import ConfigParser
 
 filename = 'config.cfg'
 config = ConfigParser.SafeConfigParser()

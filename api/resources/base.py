@@ -5,18 +5,15 @@ import werkzeug.exceptions as ex
 from flask import Flask, abort
 
 from api.services.base import BaseService
-from api.services.glbservice import GlbServiceOps
-from api.services.nodeservice import NodeServiceOps
-from api.services.monitorservice import MonitorServiceOps
 
 
-class BaseResource(BaseService):
+class BaseResource(object):
 
     def __init__(self):
         #Can set configurations and other resource options here...
-        self.glbservice = GlbServiceOps()
-        self.nodeservice = NodeServiceOps()
-        self.monitorservice = MonitorServiceOps()
+        self.glbservice = BaseService.GlbServiceOps()
+        self.nodeservice = BaseService.NodeServiceOps()
+        self.monitorservice = BaseService.MonitorServiceOps()
 
     def get_request_body(self, req):
         try:

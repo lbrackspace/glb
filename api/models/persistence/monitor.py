@@ -1,5 +1,6 @@
-import base
-from sqlalchemy import Table, Column, Integer, ForeignKey, String
+from sqlalchemy import Column, Integer, ForeignKey
+
+from api.models.persistence import base
 
 
 class MonitorModel(base.Base, base.BaseModel):

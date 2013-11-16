@@ -17,9 +17,7 @@ DROP TABLE IF EXISTS `name_server`;
 CREATE TABLE `name_server` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(15) DEFAULT NULL,
-    `node_id` int(11) DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_d_ns` FOREIGN KEY (node_id) REFERENCES node(id)
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 

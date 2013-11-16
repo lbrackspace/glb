@@ -6,23 +6,23 @@ from api.services.base import BaseService
 
 class NodesService(BaseService):
 
-    def get_all(self):
+    def get_all(self, glb_id):
         #Logical validation and other operations
-        glbs = self.glbpersistence.gsp.get_all()
-        return glbs
+        nodes = self.glbpersistence.gsp.get_all(glb_id)
+        return nodes
 
-    def create(self, account_id, glb):
+    def create(self, glb_id, node):
         #Logical validation and other operations
-        g = self.glbpersistence.gsp.create(account_id, glb.get('name'), glb.get('algorithm'))
-        return g
+        n = self.nodepersistence.nsp.create(glb_id, node.get('ip_address'), node.get('type'))
+        return n
 
 
 class NodeService(BaseService):
 
-    def get(self, id):
+    def get(self, account_id, id):
         #Logical validation and other operations
-        glbs = self.glbpersistence.gp.get(id)
-        return glbs
+        node = self.nodepersistence.np.get(id)
+        return node
 
 
 class NodeServiceOps(object):
