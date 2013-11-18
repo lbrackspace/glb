@@ -1,5 +1,5 @@
 from api import app
-from flask import json, request, abort
+from flask import jsonify, request, abort
 from api.resources.base import BaseResource
 from api.services import glbservice, nodeservice, monitorservice
 from api.models.persistence import glb, node, monitor
@@ -11,7 +11,7 @@ class GlobalLoadbalancersResource(BaseResource):
         glbs = glbservice.GlobalLoadbalancersService().get_all()
         glb_list = [g.to_dict() for g in glbs]
         glbs = {"glbs": glb_list}
-        return json.dumps(glbs, indent=2)
+        return jsonify(glbs)
 
     def post(self, account_id):
         json_body = self.get_request_body(request)
@@ -26,7 +26,7 @@ class GlobalLoadbalancersResource(BaseResource):
         # service and let the services commuicate between eachother.
         g = glbservice.GlobalLoadbalancersService().create(account_id, glb_json)
         g = {"glb": g.to_dict()}
-        return json.dumps(g, indent=2)
+        return jsonify(g)
 
 
 class GlobalLoadbalancerResource(BaseResource):
@@ -34,5 +34,5 @@ class GlobalLoadbalancerResource(BaseResource):
     def get(self, account_id, id):
         #Object validation, error handling etc...
         glb = glbservice.GlobalLoadbalancerService().get(id)
-        return json.dumps({'glb': glb.to_dict()}, indent=2)
+        return jsonify({'glb': glb.to_dict()})
 

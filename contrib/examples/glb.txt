@@ -1,3 +1,4 @@
+##Request
 {
     "glb": {
         "name": "test33",
@@ -12,5 +13,30 @@
                 }
             }
         ]
+    }
+}
+
+##Response
+{
+    "glb": {
+        "algorithm": "RANDOM",
+        "cname": "39.glbaas.rackspace.net",
+        "id": 39,
+        "name": "test33",
+        "nodes": [
+            {
+                "id": 11,
+                "ip_address": "10.1.1.1",
+                "monitor": {
+                    "id": 11,
+                    "interval": 30,
+                    "threshold": "70"
+                },
+                "name_servers": [],
+                "status": "ONLINE",
+                "type": "PASSIVE"
+            }
+        ],
+        "status": "ACTIVE"
     }
 }
