@@ -39,19 +39,22 @@ CREATE TABLE `glb` (
     `cname` varchar(128) DEFAULT NULL,
     `status` varchar(128) DEFAULT NULL,
     `algorithm` varchar(32) DEFAULT NULL,
+    `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `delete_time` timestamp NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT  `fk_d_status` FOREIGN KEY (status) REFERENCES glb_status(name)
+    CONSTRAINT  `fk_d_status` FOREIGN KEY (status) REFERENCES glb_status(name),
     CONSTRAINT  `fk_d_algo` FOREIGN KEY (algorithm) REFERENCES glb_algorithm(name)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `glb_algorithm`;
-
 CREATE TABLE `glb_algorithm` (
     `name` varchar(32) DEFAULT NULL,
     `description` varchar(128) DEFAULT NULL,
     PRIMARY KEY (`name`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `glb_status`;
 CREATE TABLE `glb_status` (
     `name` varchar(32) DEFAULT NULL,
     `description` varchar(128) DEFAULT NULL,
