@@ -27,8 +27,8 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
         self.nodes = nodes
 
     def to_dict(self):
-        nodes_dict = [item.node.to_dict() for item in self.nodes
-                      if item is not None and item.node is not None]
+        nodes_dict = [item.to_dict() for item in self.nodes
+                      if item is not None]
 
         glb_dict = {'id': self.id_, 'name': self.name, 'cname': self.cname,
                     'status': self.status, 'algorithm': self.algorithm,

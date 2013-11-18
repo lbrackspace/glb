@@ -20,4 +20,4 @@ class NameserverModel(base.Base, base.BaseModel):
         return ns_dict
 
     def __repr__(self):
-        return '<Monitor %r>' % self.threshold
+        return '<NameServer %r>' % self.name

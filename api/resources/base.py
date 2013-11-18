@@ -1,19 +1,14 @@
 import flask
 import json
-from api import app
-import werkzeug.exceptions as ex
-from flask import Flask, abort
-
+from flask.ext.restful import Resource
 from api.services.base import BaseService
 
 
-class BaseResource(object):
+class BaseResource(Resource):
 
     def __init__(self):
         #Can set configurations and other resource options here...
-        self.glbservice = BaseService.GlbServiceOps()
-        self.nodeservice = BaseService.NodeServiceOps()
-        self.monitorservice = BaseService.MonitorServiceOps()
+        pass
 
     def get_request_body(self, req):
         try:

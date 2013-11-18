@@ -1,13 +1,15 @@
 from api import app
 from flask import json, request, abort
 from api.resources.base import BaseResource
+from api.services import glbservice, nodeservice, monitorservice
+
 
 
 class NodesResource(BaseResource):
 
     def get(self, account_id, glb_id):
         #Object validation, error handling etc...
-        nodes = self.nodeservice.ns.get_all()
+        nodes = nodeservice.NodesService().get_all()
         node_list = [n.to_dict() for n in nodes]
         nodes = {"nodes": node_list}
         return json.dumps(nodes, indent=2)
@@ -19,7 +21,7 @@ class NodesResource(BaseResource):
         #Object validation, error handling etc...
 
         g = self.glbservice.g.get(glb_id)
-        n = self.nodeservice.ns.create(g.get('id'),  nodes_json)
+        n = nodeservice.NodesService.create(g.get('id'),  nodes_json)
         #self.monitorservice.ms.create(monitor_json)
 
         n = {"node": n.to_dict}
@@ -30,6 +32,6 @@ class NodeResource(BaseResource):
 
     def get(self, id):
         #Object validation, error handling etc...
-        node = self.nodeservice.g.get(id)
+        node = nodeservice.NodeService.get(id)
         return json.dumps({'node': node.to_dict()}, indent=2)
 

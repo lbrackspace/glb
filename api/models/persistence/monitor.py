@@ -21,7 +21,7 @@ class MonitorModel(base.Base, base.BaseModel):
 
     def to_dict(self):
         mon_dict = {'id': self.id_, 'interval': self.interval,
-                    'threshold': self.threshold, 'node_id': self.node_id}
+                    'threshold': self.threshold}
         return mon_dict
 
     def __repr__(self):
