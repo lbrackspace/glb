@@ -8,8 +8,10 @@ CREATE TABLE `node` (
     `glb_id` int(11) NOT NULL,
     `ip_address` varchar(128) DEFAULT NULL,
     `type` varchar(32) DEFAULT NULL,
+    `ip_type` varchar(32) DEFAULT NULL,
     `status` varchar(32) DEFAULT NULL,
     PRIMARY KEY (`id`),
+    CONSTRAINT  `fk_d_ip_type` FOREIGN KEY (ip_type) REFERENCES ip_type(name),
     CONSTRAINT `fk_d_glb` FOREIGN KEY (glb_id) REFERENCES glb(id)
 ) ENGINE=InnoDB;
 
@@ -40,8 +42,7 @@ CREATE TABLE `glb` (
     `status` varchar(128) DEFAULT NULL,
     `algorithm` varchar(32) DEFAULT NULL,
     `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-    `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `delete_time` timestamp NULL DEFAULT NULL,
+    `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     CONSTRAINT  `fk_d_status` FOREIGN KEY (status) REFERENCES glb_status(name),
     CONSTRAINT  `fk_d_algo` FOREIGN KEY (algorithm) REFERENCES glb_algorithm(name)
@@ -56,6 +57,13 @@ CREATE TABLE `glb_algorithm` (
 
 DROP TABLE IF EXISTS `glb_status`;
 CREATE TABLE `glb_status` (
+    `name` varchar(32) DEFAULT NULL,
+    `description` varchar(128) DEFAULT NULL,
+    PRIMARY KEY (`name`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `ip_type`;
+CREATE TABLE `ip_type` (
     `name` varchar(32) DEFAULT NULL,
     `description` varchar(128) DEFAULT NULL,
     PRIMARY KEY (`name`)
@@ -76,6 +84,9 @@ INSERT INTO `glb_status` VALUES('PENDING_DELETE', 'Pending Delete');
 INSERT INTO `glb_status` VALUES('PENDING_UPDATE', 'Pending Update');
 INSERT INTO `glb_status` VALUES('QUEUE', 'Queue');
 INSERT INTO `glb_status` VALUES('NONE', 'Nada');
+
+INSERT INTO `ip_type` VALUES('IPV4', 'IPV4');
+INSERT INTO `ip_type` VALUES('IPV6', 'IPV6');
 
 
 set unique_checks=1;

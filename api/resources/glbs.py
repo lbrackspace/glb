@@ -1,8 +1,26 @@
 from api import app
 from flask import jsonify, request, abort
+from flask.ext.restful import fields, marshal
 from api.resources.base import BaseResource
 from api.services import glbservice, nodeservice, monitorservice
-from api.models.persistence import glb, node, monitor
+
+node_fields = {
+    'id': fields.String,
+    'name': fields.String,
+    'cname': fields.String,
+    'algorithm': fields.String,
+    'status': fields.String,
+    'nodes': fields.Nested
+}
+
+glb_fields = {
+    'id': fields.String,
+    'name': fields.String,
+    'cname': fields.String,
+    'algorithm': fields.String,
+    'status': fields.String,
+    'nodes': fields.Nested
+}
 
 class GlobalLoadbalancersResource(BaseResource):
 
@@ -10,8 +28,9 @@ class GlobalLoadbalancersResource(BaseResource):
         #Object validation, error handling etc...
         glbs = glbservice.GlobalLoadbalancersService().get_all()
         glb_list = [g.to_dict() for g in glbs]
+        #glbs = {"glbs": marshal(glb_list, glb_fields)}
         glbs = {"glbs": glb_list}
-        return jsonify(glbs)
+        return glbs
 
     def post(self, account_id):
         json_body = self.get_request_body(request)

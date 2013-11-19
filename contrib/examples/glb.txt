@@ -6,6 +6,7 @@
         "nodes": [
             {
                 "ip_address": "10.1.1.1",
+                "ip_type": "IPV4",
                 "type": "PASSIVE",
                 "monitor": {
                     "interval": "30",
@@ -27,12 +28,45 @@
             {
                 "id": 11,
                 "ip_address": "10.1.1.1",
+                "ip_type": "IPV4",
                 "monitor": {
                     "id": 11,
                     "interval": 30,
                     "threshold": "70"
                 },
-                "name_servers": [],
+                "status": "ONLINE",
+                "type": "PASSIVE"
+            }
+        ],
+        "name_servers": [
+			{
+			    "name": "ns1.rax.glb.com"
+		    }],
+        "status": "ACTIVE"
+    }
+}
+
+
+{
+    "glb": {
+        "algorithm": "RANDOM",
+        "cname": "39.glbaas.rackspace.net",
+        "id": 39,
+        "name": "test33",
+        "nodes": [
+            {
+                "id": 11,
+                "ip_address": "10.1.1.1",
+                "ip_type": "IPV4",
+                "monitor": {
+                    "id": 11,
+                    "interval": 30,
+                    "threshold": "70"
+                },
+                "name_servers": [
+						{
+							"name": "ns1.rax.glb.com"
+						}],
                 "status": "ONLINE",
                 "type": "PASSIVE"
             }

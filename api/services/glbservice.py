@@ -23,12 +23,11 @@ class GlobalLoadbalancersService(BaseService):
             for n in nodes_json:
                 m = n.get('monitor')
                 mm = monitor.MonitorModel(interval=m.get('interval'), threshold=m.get('threshold'))
-                nm = node.NodeModel(ip_address=n.get('ip_address'), type=n.get('type'), monitor=mm)
+                nm = node.NodeModel(ip_address=n.get('ip_address'), type=n.get('type'), ip_type=n.get('ip_type'), monitor=mm)
                 nlist.append(nm)
 
             glbm = glb.GlobalLoadbalancerModel(account_id=account_id, name=glb_json.get('name'),
-                                    cname=None, status=None, algorithm=glb_json.get('algorithm'),
-                                    nodes=nlist)
+                                               algorithm=glb_json.get('algorithm'), nodes=nlist)
             g = self.glbpersistence.gsp.create(account_id, glbm)
         return g
 
