@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
-from datetime import datetime
+import datetime
 from api.models.persistence import base
 
 
@@ -29,11 +29,11 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
         self.status = status
         self.algorithm = algorithm
         if create_time is None:
-            self.create_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+            self.create_time = datetime.datetime.utcnow()
         else:
             self.create_time = create_time
         if update_time is None:
-            self.update_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+            self.update_time = datetime.datetime.utcnow()
         else:
             self.update_time = update_time
         self.nodes = nodes
@@ -48,7 +48,8 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
 
         glb_dict = {'id': self.id_, 'name': self.name, 'cname': self.cname,
                     'algorithm': self.algorithm, 'status': self.status,
-                    #'create_time': self.create_time, 'update_time': self.update_time,
+                    'create_time': self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+                    'update_time': self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
                     'nodes': nodes_dict, 'name_servers': ns_dict}
         return glb_dict
 

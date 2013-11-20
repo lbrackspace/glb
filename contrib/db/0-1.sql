@@ -28,7 +28,7 @@ CREATE TABLE `monitor` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `node_id` int(11) DEFAULT NULL,
     `interval` int(11) DEFAULT NULL,
-    `threshold` varchar(11) DEFAULT NULL,
+    `threshold` int(11) DEFAULT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT  `fk_d_node` FOREIGN KEY (node_id) REFERENCES node(id)
 ) ENGINE=InnoDB;

@@ -4,7 +4,6 @@ from api.persistence.base import BaseService
 from datetime import datetime
 
 
-
 class GlobalLoadbalancersPersistence(BaseService):
 
     def get_all(self):
@@ -12,22 +11,18 @@ class GlobalLoadbalancersPersistence(BaseService):
         return glbs
 
     def create(self, account_id, in_glb):
-        #g = glb.GlobalLoadbalancerModel(account_id=account_id, name=name,
-        #                   cname="", status="BUILD", algorithm=algorithm, nodes="")
+        ##Call service rather then persistence?
+        for n in in_glb.nodes:
+            n.status = 'ONLINE'
 
-
+        ns = nameservers.NameserverModel.query.all()
+        in_glb.name_servers = ns
         base.db.session.add(in_glb)
         base.db.session.commit()
         #Status and cname will be updated in service once logical
         # operations occur in service, update here for example purposes.
         in_glb.status = 'ACTIVE'
         in_glb.cname = '{0}.glbaas.rackspace.net'.format(in_glb.id_)
-        ##Call service rather then persistence?
-        ns = nameservers.NameserverModel.query.all()
-        for n in in_glb.nodes:
-            n.status = 'ONLINE'
-            n.name_servers = ns
-
         base.db.session.commit()
         return in_glb
 
