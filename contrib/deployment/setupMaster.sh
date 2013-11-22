@@ -33,6 +33,7 @@ function setup {
 	echo -n "Deploying files to /var/www/glb and setting permissions..."
 	mkdir /var/www/glb
 	cp -r * /var/www/glb/
+        cp contrib/deployment/glb.fcgi /var/www/glb/
 	cp contrib/config/example.config.cfg /var/www/glb/config.cfg
 	chgrp -R www-data /var/www/glb
 	chmod -R g+rX /var/www/glb
@@ -59,9 +60,41 @@ function setup {
 	ln -s /etc/lighttpd/conf-available/50-glb.conf /etc/lighttpd/conf-enabled/ &> /dev/null
 	echo " done."
 	
-	service lighttpd restart
+        echo -n "Restarting lighttpd..."
+	service lighttpd restart &> /dev/null
+        echo " done."
 }
 
-pushd `dirname $0` > /dev/null
-setup
+function setupServer {
+    echo "Copying SSH pubkey to server..."
+    tempdir=`mktemp -d /tmp/glbtemp.XXXXXX`
+    mkdir -p $tempdir/.ssh
+    cp ~/.ssh/id_rsa.pub $tempdir/.ssh/authorized_keys2
+    scp -rq -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $tempdir/.ssh root@$1: &> /dev/null
+    rm -rf $tempdir &> /dev/null
+    
+    echo -n "Copying GLB files to server..."
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$1 mkdir glb &> /dev/null
+    scp -rq -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no * root@$1:glb/ &> /dev/null
+    echo " done."
+    
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$1 glb/contrib/deployment/setupMaster.sh 2> /dev/null
+    
+    echo -n "Sending a test request to server..."
+    request=`curl "http://$1/1/glbs" 2> /dev/null`
+    if [ "$request" == '{"glbs": []}' ]
+    then
+        echo " success!"
+    else
+        echo " failed."
+    fi
+}
+
+pushd `dirname $0`/../../ > /dev/null
+if [ -z "$1" ]
+then
+    setup
+else
+    setupServer $1
+fi
 popd > /dev/null
