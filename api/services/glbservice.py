@@ -12,6 +12,10 @@ class GlobalLoadbalancersService(BaseService):
         glbs = self.glbpersistence.gsp.get_all()
         return glbs
 
+    def get_account(self, account_id):
+        glbs = self.glbpersistence.gsp.get_account(account_id)
+        return glbs
+
     def create(self, account_id, glb_json):
         #Logical validation and other operations
         ##temp...

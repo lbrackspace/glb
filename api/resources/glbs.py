@@ -26,7 +26,7 @@ class GlobalLoadbalancersResource(BaseResource):
 
     def get(self, account_id):
         #Object validation, error handling etc...
-        glbs = glbservice.GlobalLoadbalancersService().get_all()
+        glbs = glbservice.GlobalLoadbalancersService().get_account(account_id)
         glb_list = [g.to_dict() for g in glbs]
         #glbs = {"glbs": marshal(glb_list, glb_fields)}
         glbs = {"glbs": glb_list}

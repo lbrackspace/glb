@@ -10,6 +10,11 @@ class GlobalLoadbalancersPersistence(BaseService):
         glbs = glb.GlobalLoadbalancerModel.query.all()
         return glbs
 
+    def get_account(self, aid):
+        glbs = glb.GlobalLoadbalancerModel.query.filter(
+                        glb.GlobalLoadbalancerModel.account_id == aid)
+        return glbs
+
     def create(self, account_id, in_glb):
         ##Call service rather then persistence?
         for n in in_glb.nodes:
