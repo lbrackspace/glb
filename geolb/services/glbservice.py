@@ -10,10 +10,9 @@ class GlobalLoadbalancersService(BaseService):
 
 	def create(self, account_id, glb_json):
 		#Logical validation and other operations
-		##temp...
 		nodes_json = glb_json.get('nodes')
+		nlist = []
 		if nodes_json is not None:
-			nlist = []
 			for n in nodes_json:
 				m = n.get('monitor')
 				mm = monitor.MonitorModel(
@@ -23,14 +22,15 @@ class GlobalLoadbalancersService(BaseService):
 					ip_type=n.get('ip_type'), monitor=mm)
 				nlist.append(nm)
 
-			glbm = glb.GlobalLoadbalancerModel(
+		glbm = glb.GlobalLoadbalancerModel(
 				account_id=account_id, name=glb_json.get('name'),
 				algorithm=glb_json.get('algorithm'), nodes=nlist)
-			g = self.glbpersistence.gsp.create(account_id, glbm)
+		g = self.glbpersistence.gsp.create(account_id, glbm)
 		return g
 
 
 class GlobalLoadbalancerService(BaseService):
+
 	def get(self, account_id, id):
 		#Logical validation and other operations
 		glbs = self.glbpersistence.gp.get(id)

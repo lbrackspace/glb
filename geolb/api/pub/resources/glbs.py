@@ -26,29 +26,29 @@ class GlobalLoadbalancersResource(BaseResource):
         ##Do hydrated object here calling each service to
         # validate and create object, or send hydrated glb to
         # service and let the services communicate between each other.
-        g = glbservice.GlobalLoadbalancersService()\
+        glb = glbservice.GlobalLoadbalancersService()\
             .create(account_id, glb_json)
-        g = {"glb": marshal(g, Mappings.GLB_FIELDS)}
-        return jsonify(g)
+        glb = {"glb": glb.to_dict()}
+        return jsonify(glb)
 
 
 class GlobalLoadbalancerResource(BaseResource):
 
-    def get(self, account_id, id):
+    def get(self, account_id, glb_id):
         #Object validation, error handling etc...
-        glb = glbservice.GlobalLoadbalancerService().get(account_id, id)
-        return jsonify({"glb": marshal(glb, Mappings.GLB_FIELDS)})
+        glb = glbservice.GlobalLoadbalancerService().get(account_id, glb_id)
+        return jsonify({"glb": glb.to_dict()})
 
-    def put(self, account_id, id):
+    def put(self, account_id, glb_id):
         json_body = self.get_request_body(request)
         #Object validation, error handling etc...
         glb_json = json_body.get('glb')
         glb = glbservice.GlobalLoadbalancerService()\
-            .update(account_id, id, glb_json)
+            .update(account_id, glb_id, glb_json)
         return jsonify({"glb": glb.to_dict()})
 
-    def delete(self, account_id, id):
+    def delete(self, account_id, glb_id):
         #Object validation, error handling etc...
-        glb = glbservice.GlobalLoadbalancerService().delete(account_id, id)
+        glb = glbservice.GlobalLoadbalancerService().delete(account_id, glb_id)
         return jsonify({"glb": glb.to_dict()})
 
