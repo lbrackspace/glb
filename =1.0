@@ -1,0 +1,8 @@
+Downloading/unpacking flup
+  Running setup.py egg_info for package flup
+    
+Installing collected packages: flup
+  Running setup.py install for flup
+    
+Successfully installed flup
+Cleaning up...
