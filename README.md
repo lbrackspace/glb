@@ -1,15 +1,28 @@
-Currently the 'glb' application utilizes Flask, Flask-restful and SqlAlchemy to accomplish a simple api.
+GLB API
+=======
+Currently the 'glb' application utilizes Flask, Flask-RESTful and SQLAlchemy to present a simple API.
 
-In order to run you must have flask, flask-restful and flask-sqlalchemy installed.
+Dependency installation
+-------
+pip install -r < requires.txt
 
-Run:
+Running the API in development mode
+-------
+python runServer.py
 
-python runserver.py
+By default, the server will run on port 5000.
+EX: GET http://localhost:5000/406271/glbs will return a list of global load balancers for user 406271.
 
+Deploying the API to a remote machine (Debian 7 / Wheezy)
+-------
+contrib/deployment/deployMaster.sh target-machine
 
-The server will run on port 5000. The endpoints or entry points are defined in api/__init__.py
+By default, the server will run on port 80.
+EX: GET http://target-machine/406271/glbs will return a list of global load balancers for user 406271.
 
-EX: GET http://localhost:5000/406271/glbs will return list of global load balancers.
+Usage
+-------
+The endpoints or entry points are defined in api/__init__.py
 
 Example requests will be located in contrib/examples
 
