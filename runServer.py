@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-from geolb.api import app
+from api import app
 
 app.run(debug=True)
