@@ -69,6 +69,14 @@ CREATE TABLE `ip_type` (
     PRIMARY KEY (`name`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `regions`;
+CREATE TABLE `regions` (
+    `name` varchar(32) DEFAULT NULL,
+    `code` varchar(128) DEFAULT NULL,
+    `description` varchar(128) DEFAULT NULL,
+    PRIMARY KEY (`name`)
+) ENGINE=InnoDB;
+
 INSERT INTO `glb_algorithm` VALUES('RANDOM', 'Random');
 INSERT INTO `glb_algorithm` VALUES('GEOIP', 'GeoIP');
 INSERT INTO `glb_algorithm` VALUES('WEIGHTED', 'Weighted');
@@ -87,6 +95,13 @@ INSERT INTO `glb_status` VALUES('NONE', 'Nada');
 
 INSERT INTO `ip_type` VALUES('IPV4', 'IPV4');
 INSERT INTO `ip_type` VALUES('IPV6', 'IPV6');
+
+INSERT INTO `regions` VALUES('CATCH_ALL', '1', 'A region for ip addresses that do not map to other regions');
+INSERT INTO `regions` VALUES('NORTH_AMERICA', '2', 'The North American region');
+INSERT INTO `regions` VALUES('SOUTH_AMERICA', '3', 'The South American region');
+INSERT INTO `regions` VALUES('EUROPE', '4', 'European region');
+INSERT INTO `regions` VALUES('ASIA', '5', 'Asian region');
+INSERT INTO `regions` VALUES('PACIFIC', '6', 'Pacific region');
 
 
 set unique_checks=1;

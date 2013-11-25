@@ -25,11 +25,11 @@ class GlobalLoadbalancersPersistence(BaseService):
 
 
 class GlobalLoadbalancerPersistence(BaseService):
-	def get(self, id):
+	def get(self, account_id, glb_id):
 		g = glb.GlobalLoadbalancerModel.query.filter_by(id_=id).first()
 		return g
 
-	def update(self, in_glb):
+	def update(self, account_id, glb_id, in_glb):
 		g = glb.GlobalLoadbalancerModel.query.filter_by(id_=in_glb.id_).first()
 		#Any other attributes...
 		g.name = in_glb.name
@@ -37,7 +37,7 @@ class GlobalLoadbalancerPersistence(BaseService):
 		base.db.session.commit()
 		return g
 
-	def delete(self, glb_id):
+	def delete(self, account_id, glb_id):
 		g = glb.GlobalLoadbalancerModel.query.filter_by(id_=glb_id).first()
 		try:
 			#base.db.session.delete(g)
