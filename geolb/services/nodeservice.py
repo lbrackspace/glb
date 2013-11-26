@@ -1,5 +1,5 @@
 from geolb.services.base import BaseService
-from geolb.models.persistence import glb, node, monitor
+from geolb.models.persistence import glb, node, monitor, region
 
 
 class NodesService(BaseService):
@@ -17,9 +17,20 @@ class NodesService(BaseService):
 				m = n.get('monitor')
 				mm = monitor.MonitorModel(
 					interval=m.get('interval'), threshold=m.get('threshold'))
+
+				#tmp
+				regions = [region.RegionModel(id_=1)]
+				regions_json = n.get('regions')
+				for r in regions_json:
+					rr = region.RegionModel(id_=r.get('id'))
+					regions.append(rr)
+
+				#Weight defaults to 1
+				weight = n.get('weight') if n.get('weight') is not None else 1
 				nm = node.NodeModel(glb_id=glb_id,
 					ip_address=n.get('ip_address'), type=n.get('type'),
-					ip_type=n.get('ip_type'), monitor=mm)
+					ip_type=n.get('ip_type'), monitor=mm,
+					weight=weight, regions=regions)
 				nlist.append(nm)
 
 			g = self.nodepersistence.nsp.create(account_id, glb_id, nm)

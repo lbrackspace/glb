@@ -1,5 +1,5 @@
 from geolb.services.base import BaseService
-from geolb.models.persistence import glb, node, monitor
+from geolb.models.persistence import glb, node, monitor, region
 
 
 class GlobalLoadbalancersService(BaseService):
@@ -10,27 +10,47 @@ class GlobalLoadbalancersService(BaseService):
 
 	def create(self, account_id, glb_json):
 		#Logical validation and other operations
+		#Call other services to do validation of child objects or do
+		#All validation for 'one' call in the same place..
 		nodes_json = glb_json.get('nodes')
 		nlist = []
 		if nodes_json is not None:
 			for n in nodes_json:
 				m = n.get('monitor')
-				mm = monitor.MonitorModel(
-					interval=m.get('interval'), threshold=m.get('threshold'))
-				nm = node.NodeModel(
-					ip_address=n.get('ip_address'), type=n.get('type'),
-					ip_type=n.get('ip_type'), monitor=mm)
+				mm = monitor.MonitorModel(interval=m.get('interval'),
+				                          threshold=m.get('threshold'))
+
+				#tmp, working on region relations
+				regions_json = n.get('regions')
+				regions = []
+				#:/
+				if regions_json is not None:
+					regs = self.regionpersistence.rsp.get_all()
+					if regs is not None:
+						for rj in regions_json:
+							for r in regs:
+								if rj.get('name') == r.name:
+									regions.append(r)
+				else:
+					careg = self.regionpersistence.rp.get(1)
+					regions.append(careg)
+
+				#Weight defaults to 1
+				weight = n.get('weight') if n.get('weight') is not None else 1
+				nm = node.NodeModel(ip_address=n.get('ip_address'),
+				                    type=n.get('type'),ip_type=n.get('ip_type'),
+				                    monitor=mm, weight=weight, regions=regions)
 				nlist.append(nm)
 
 		glbm = glb.GlobalLoadbalancerModel(
-				account_id=account_id, name=glb_json.get('name'),
-				algorithm=glb_json.get('algorithm'), nodes=nlist)
+			account_id=account_id, name=glb_json.get('name'),
+			algorithm=glb_json.get('algorithm'), nodes=nlist)
+
 		g = self.glbpersistence.gsp.create(account_id, glbm)
 		return g
 
 
 class GlobalLoadbalancerService(BaseService):
-
 	def get(self, account_id, id):
 		#Logical validation and other operations
 		glbs = self.glbpersistence.gp.get(id)

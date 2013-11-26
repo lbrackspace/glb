@@ -1,10 +1,9 @@
 import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
 from geolb.models.persistence import base
-
 
 class GlobalLoadbalancerModel(base.Base, base.BaseModel):
     __tablename__ = 'glb'
@@ -20,7 +19,8 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
     status = Column(String(32))
     create_time = Column(DateTime(timezone=True))
     update_time = Column(DateTime(timezone=True))
-    nodes = relationship('NodeModel', backref='glb', lazy='dynamic', cascade="all,delete")
+    nodes = relationship('NodeModel', backref='glb', lazy='dynamic',
+                         cascade="all,delete")
 
     def __init__(self, account_id=None, name=None, cname=None, status=None,
                  algorithm=None, create_time=None, update_time=None, nodes=[]):

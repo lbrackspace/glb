@@ -5,17 +5,18 @@ from geolb.models.persistence import base
 
 class RegionModel(base.Base, base.BaseModel):
     #This model may not be needed
-    __tablename__ = 'regions'
+    __tablename__ = 'region'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'glb_status'
+    TAG = 'region'
 
     id_ = Column('id', Integer, primary_key=True)
     name = Column(String(32))
     code = Column(String(32))
     description = Column(String(128))
 
-    def __init__(self, name=None, code=None, description=None):
+    def __init__(self, id_=None, name=None, code=None, description=None):
+        self.id_ = id_
         self.name = name
         self.code = code
         self.description = description

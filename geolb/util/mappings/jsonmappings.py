@@ -8,13 +8,19 @@ class Mappings(object):
         'threshold': fields.String
     }
 
+    REGION_FIELDS = {
+        'name': fields.String,
+        'description': fields.String
+    }
+
     NODE_FIELDS = {
         'id': fields.String,
         'ip_address': fields.String,
         'ip_type': fields.String,
         'type': fields.String,
         'status': fields.String,
-        'monitor': fields.Nested(MONITOR_FIELDS)
+        'monitor': fields.Nested(MONITOR_FIELDS),
+        'regions': fields.Nested(REGION_FIELDS)
     }
 
     NAMESERVER_FIELDS = {

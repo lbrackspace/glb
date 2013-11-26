@@ -2,6 +2,8 @@ from geolb.services.base import BaseService
 
 
 class MonitorService(BaseService):
+	#Should we follow convention and use mon_id instead.
+	# Only one monitor per node, no sense in making user find the id for it :/
 	def get(self, account_id, glb_id, node_id):
 		#Logical validation and other operations
 		monitor = self.monitorpersistence.mp.get(account_id, glb_id, node_id)
