@@ -8,10 +8,16 @@
                 "ip_address": "10.1.1.1",
                 "ip_type": "IPV4",
                 "type": "PASSIVE",
+                "weight":"20",
                 "monitor": {
                     "interval": "30",
                     "threshold": "70"
-                }
+                },
+               "regions": [
+                      {
+                         "name":"NORTH_AMERICA"
+                     }
+                 ]
             }
         ]
     }
@@ -26,7 +32,12 @@
             "monitor": {
                 "interval": "20",
                 "threshold": "90"
-            }
+            },
+            "regions": [
+                  {
+                   "name":"NORTH_AMERICA"
+                }
+            ]
         }
     ]
 }

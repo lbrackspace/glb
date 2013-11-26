@@ -23,7 +23,7 @@ api = Api(app)
 #def shutdown_session(exception=None):
 #    base.db_session.remove()
 
-from geolb.api.pub.resources import glbs, nodes, monitor
+from geolb.api.pub.resources import glbs, nodes, monitor, regions
 
 #GLBs
 api.add_resource(glbs.GlobalLoadbalancersResource, '/<int:account_id>/glbs')
@@ -35,6 +35,9 @@ api.add_resource(nodes.NodeResource, '/<int:account_id>/glbs/<int:glb_id>/nodes/
 
 ##Monitors
 api.add_resource(monitor.MonitorResource, '/<int:account_id>/glbs/<int:glb_id>/nodes/<int:node_id>/monitor')
+
+#Regions
+api.add_resource(regions.RegionsResource, '/<int:account_id>/regions')
 
 
 

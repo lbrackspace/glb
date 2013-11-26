@@ -24,9 +24,9 @@ class RegionPersistence(BaseService):
 	def update(self, region_id, in_region):
 		r = region.RegionModel.query.filter_by(id_=region_id).first()
 		#Any other attributes...
-		r.ip_address = in_region.ip_address
-		r.ip_type = in_region.ip_type
-		r.type = in_region.type
+		r.name = in_region.name
+		r.code = in_region.code
+		r.description = in_region.description
 		base.db.session.commit()
 		return r
 
