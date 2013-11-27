@@ -4,17 +4,17 @@ from sqlalchemy.orm import relationship
 from geolb.models.persistence import base
 
 #its own class?
-nodes_regions = Table('nodes_regions', base.Base.metadata,
-    Column('node_id', Integer, ForeignKey('node.id')),
-    Column('region_id', Integer, ForeignKey('region.id'))
+nodes_regions = Table('glb.node.region', base.Base.metadata,
+    Column('node_id', Integer, ForeignKey('glb.node.id')),
+    Column('region_id', Integer, ForeignKey('enum.glb.node.region.id'))
 )
 
 
 class NodeModel(base.Base, base.BaseModel):
-    __tablename__ = 'node'
+    __tablename__ = 'glb.node'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'node'
+    TAG = 'glb.node'
 
     id_ = Column('id', Integer, primary_key=True)
     ip_address = Column(String(32))
@@ -24,7 +24,7 @@ class NodeModel(base.Base, base.BaseModel):
     status = Column(String(128))
     glb_id = Column(Integer, ForeignKey('glb.id'))
     monitor = relationship("MonitorModel", uselist=False, backref="node")
-    regions = relationship('RegionModel', secondary=nodes_regions)
+    regions = relationship("RegionModel", secondary=nodes_regions)
 
     def __init__(self, ip_address=None, type=None, ip_type=None,
                  weight=None, status=None, glb_id=None,

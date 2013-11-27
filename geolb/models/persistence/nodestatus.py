@@ -3,12 +3,12 @@ from sqlalchemy import Column, Integer, String
 from geolb.models.persistence import base
 
 
-class StatusModel(base.Base, base.BaseModel):
+class NodeStatusModel(base.Base, base.BaseModel):
     #This model may not be needed
-    __tablename__ = 'glb_status'
+    __tablename__ = 'enum.glb.node.status'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'glb_status'
+    TAG = 'enum.glb.node.status'
 
     id_ = Column('id', Integer, primary_key=True)
     name = Column(String(32))
@@ -24,4 +24,4 @@ class StatusModel(base.Base, base.BaseModel):
         return stat_dict
 
     def __repr__(self):
-        return '<Algorithm %r>' % self.name
+        return '<NodeStatus %r>' % self.name

@@ -5,10 +5,10 @@ from geolb.models.persistence import base
 
 class AlgorithmModel(base.Base, base.BaseModel):
     #This model may not be needed
-    __tablename__ = 'glb_algorithm'
+    __tablename__ = 'enum.glb.algorithm'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'glb_algorithm'
+    TAG = 'enum.glb.algorithm'
 
     id_ = Column('id', Integer, primary_key=True)
     name = Column(String(32))

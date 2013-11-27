@@ -16,18 +16,18 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
     name = Column(String(128))
     cname = Column(String(128))
     algorithm = Column(String(32))
-    status = Column(String(32))
+    status = None
+    raw_status = relationship('GlbStatusModel', lazy='dynamic', backref="glb")
     create_time = Column(DateTime(timezone=True))
     update_time = Column(DateTime(timezone=True))
     nodes = relationship('NodeModel', backref='glb', lazy='dynamic',
                          cascade="all,delete")
 
-    def __init__(self, account_id=None, name=None, cname=None, status=None,
+    def __init__(self, account_id=None, name=None, cname=None,
                  algorithm=None, create_time=None, update_time=None, nodes=[]):
         self.account_id = account_id
         self.name = name
         self.cname = cname
-        self.status = status
         self.algorithm = algorithm
         if create_time is None:
             self.create_time = datetime.datetime.utcnow()
