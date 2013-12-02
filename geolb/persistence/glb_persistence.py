@@ -1,4 +1,4 @@
-from geolb.models.persistence import base, glb, nameservers
+from geolb.models.persistence import base, glb, nameserver
 from geolb.persistence.base import BaseService
 #temp
 
@@ -18,22 +18,27 @@ class GlobalLoadbalancersPersistence(BaseService):
 		base.db.session.commit()
 		#Status and cname will be updated in service once logical
 		# operations occur in service, update here for example purposes.
-		in_glb.status = 'ACTIVE'
-		in_glb.cname = '{0}.glb.rackspace.net'.format(in_glb.id_)
+		#in_glb.status = 'ACTIVE'
+		in_glb.cname = 'glb_{0}rackspace.net'.format(in_glb.id_)
 		base.db.session.commit()
 		return in_glb
 
 
 class GlobalLoadbalancerPersistence(BaseService):
 	def get(self, account_id, glb_id):
-		g = glb.GlobalLoadbalancerModel.query.filter_by(id_=id).first()
+		g = glb.GlobalLoadbalancerModel.query.filter_by(id_=glb_id).first()
 		return g
 
 	def update(self, account_id, glb_id, in_glb):
 		g = glb.GlobalLoadbalancerModel.query.filter_by(id_=in_glb.id_).first()
 		#Any other attributes...
-		g.name = in_glb.name
-		g.algorith = in_glb.algorithm
+		#g.name = in_glb.name
+		#g.algorith = in_glb.algorithm
+		#g.dc_status = in_glb.dc_status
+		#g.status = in_glb.status
+		#g.create_time = in_glb.create_time
+		#g.update_time = in_glb.update_time
+		g = in_glb
 		base.db.session.commit()
 		return g
 

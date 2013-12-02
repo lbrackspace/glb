@@ -5,10 +5,10 @@ from geolb.models.persistence import base
 
 class RegionModel(base.Base, base.BaseModel):
     #This model may not be needed
-    __tablename__ = 'enum.glb.node.region'
+    __tablename__ = 'enum_node_region'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'enum.glb.node.region'
+    TAG = 'enum_node_region'
 
     id_ = Column('id', Integer, primary_key=True)
     name = Column(String(32))

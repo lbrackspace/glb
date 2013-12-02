@@ -30,13 +30,13 @@ class RegionPersistence(BaseService):
 		base.db.session.commit()
 		return r
 
-	def delete(self, account_id, glb_id, node_id):
-		n = node.NodeModel.query.filter_by(id_=node_id).first()
+	def delete(self, region_id):
+		n = region.RegionModel.query.filter_by(id_=region_id).first()
 		try:
 			base.db.session.delete(n)
 			return n
 		except:
-			print "Delete node %d failed..." % node_id
+			print "Delete node %d failed..." % region_id
 			raise LookupError
 
 

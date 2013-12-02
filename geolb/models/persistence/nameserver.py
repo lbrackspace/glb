@@ -4,10 +4,10 @@ from geolb.models.persistence import base
 
 
 class NameserverModel(base.Base, base.BaseModel):
-    __tablename__ = 'glb.name_server'
+    __tablename__ = 'name_server'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'glb.name_server'
+    TAG = 'name_server'
 
     id_ = Column('id', Integer, primary_key=True)
     name = Column(Integer(32))

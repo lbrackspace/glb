@@ -10,7 +10,7 @@ class RegionsResource(BaseResource):
 		#Object validation, error handling etc...
 		regions = regionservice.RegionsService().get_all()
 		region_list = [r.to_dict() for r in regions]
-		regions = {"regions": region_list}
+		regions = {"regions": marshal(region_list, Mappings.REGION_FIELDS)}
 		return jsonify(regions)
 
 	#These should be mgmt ops, wip...

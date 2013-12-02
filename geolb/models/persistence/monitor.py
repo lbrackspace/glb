@@ -4,15 +4,15 @@ from geolb.models.persistence import base
 
 
 class MonitorModel(base.Base, base.BaseModel):
-    __tablename__ = 'glb.node.monitor'
+    __tablename__ = 'monitor'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'glb.node.monitor'
+    TAG = 'monitor'
 
     id_ = Column('id', Integer, primary_key=True)
     interval = Column(Integer(11))
     threshold = Column(Integer(11))
-    node_id = Column(Integer, ForeignKey('glb.node.id'))
+    node_id = Column(Integer, ForeignKey('node.id'))
 
     def __init__(self, interval=None, threshold=None, node_id=None):
         self.interval = interval

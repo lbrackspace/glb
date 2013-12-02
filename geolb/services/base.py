@@ -1,9 +1,10 @@
 from flask.ext.restful import Resource
-from geolb.persistence.glbpersistence import GlbPersistenceOps
-from geolb.persistence.nodepersistence import NodePersistenceOps
-from geolb.persistence.monitorpersistence import MonitorPersistenceOps
-from geolb.persistence.nameserverspersistence import NameserverPersistenceOps
-from geolb.persistence.regionspersistence import RegionPersistenceOps
+from geolb.persistence.glb_persistence import GlbPersistenceOps
+from geolb.persistence.node_persistence import NodePersistenceOps
+from geolb.persistence.monitor_persistence import MonitorPersistenceOps
+from geolb.persistence.nameservers_persistence import NameserverPersistenceOps
+from geolb.persistence.regions_persistence import RegionPersistenceOps
+from geolb.persistence.dcstats_persistence import DCStatsPersistenceOps
 
 
 class BaseService(Resource):
@@ -14,3 +15,4 @@ class BaseService(Resource):
         self.monitorpersistence = MonitorPersistenceOps()
         self.nameserverservice = NameserverPersistenceOps()
         self.regionpersistence = RegionPersistenceOps()
+        self.dcstatspersistence = DCStatsPersistenceOps()

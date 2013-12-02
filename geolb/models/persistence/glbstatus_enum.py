@@ -5,10 +5,10 @@ from geolb.models.persistence import base
 
 class GlbStatusEnumModel(base.Base, base.BaseModel):
     #This model may not be needed
-    __tablename__ = 'enum.glb.status'
+    __tablename__ = 'enum_glb_status'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'enum.glb.status'
+    TAG = 'enum_glb_status'
 
     id_ = Column('id', Integer, primary_key=True)
     name = Column(String(32))
