@@ -24,10 +24,11 @@ class DCStatusModel(base.Base, base.BaseModel):
 
     def to_dict(self):
         stat_dict = {'id': self.id_, 'glb_id': self.glb_id,
-                     'updated': self.updated, 'location': self.location,
-                     'status': self.status}
+                     'updated': self.updated.strftime("%Y-%m-%d %H:%M:%S"),
+                     'location': self.location, 'status': self.status}
         return stat_dict
 
     def __repr__(self):
-        return '<DCStatus %d (%s / %s): %s>' % (self.glb_id,
-                        self.updated, self.location, self.status)
+        return '<dc_status %s (%s / %s): %s>' % (self.glb_id,
+                        self.updated.strftime("%Y-%m-%d %H:%M:%S"),
+                        self.location, self.status)

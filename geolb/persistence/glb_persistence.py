@@ -30,7 +30,7 @@ class GlobalLoadbalancerPersistence(BaseService):
 		return g
 
 	def update(self, account_id, glb_id, in_glb):
-		g = glb.GlobalLoadbalancerModel.query.filter_by(id_=in_glb.id_).first()
+		g = glb.GlobalLoadbalancerModel.query.filter_by(id_=glb_id).first()
 		#Any other attributes...
 		#g.name = in_glb.name
 		#g.algorith = in_glb.algorithm

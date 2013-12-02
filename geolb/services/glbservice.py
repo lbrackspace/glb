@@ -47,6 +47,12 @@ class GlobalLoadbalancersService(BaseService):
 				                    monitor=mm, weight=weight, regions=regions)
 				nlist.append(nm)
 		dc_stats = []
+		dstats_json = glb_json.get('dc_stats')
+		for s in dstats_json:
+			dc_stats.append(dcstats.DCStatusModel(
+					location=s.get('location'),
+					status=s.get('status')))
+			
 		glbm = glb.GlobalLoadbalancerModel(
 			account_id=account_id, name=glb_json.get('name'),
 			dc_stats=dc_stats, algorithm=glb_json.get('algorithm'),
