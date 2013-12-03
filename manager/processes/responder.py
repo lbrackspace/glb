@@ -1,4 +1,5 @@
 import time
+import signal
 
 class ResponderProcess():
     def __init__(self, priority, session, response_queue, tick, RUN):
@@ -10,10 +11,12 @@ class ResponderProcess():
         print "Initialized Responder Process."
 
     def run(self):
+        s = signal.signal(signal.SIGINT, signal.SIG_IGN)
         while self.RUN.value:
-            try:
-                time.sleep(self.tick_time.value)
-                if self.priority.value == 'M':
-                    print "=== Responder Process Tick ==="
-            except KeyboardInterrupt:
-                pass #print "Responder caught interrupt."
+            self.do_responding()
+        signal.signal(signal.SIGINT, s)
+
+    def do_responding(self):
+            time.sleep(self.tick_time.value)
+            if self.priority.value == 'M':
+                print "=== Responder Process Tick ==="

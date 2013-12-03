@@ -1,4 +1,5 @@
 import time
+import signal
 
 class WorkerProcess():
     def __init__(self, priority, session, work_queue, response_queue, 
@@ -12,10 +13,12 @@ class WorkerProcess():
         print "Initialized Worker Process."
 
     def run(self):
+        s = signal.signal(signal.SIGINT, signal.SIG_IGN)
         while self.RUN.value:
-            try:
-                time.sleep(self.tick_time.value)
-                if self.priority.value == 'M':
-                    print "=== Worker Process Tick ==="
-            except KeyboardInterrupt:
-                pass #print "Responder caught interrupt."
+            self.do_work()
+        signal.signal(signal.SIGINT, s)
+
+    def do_work(self):
+        time.sleep(self.tick_time.value)
+        if self.priority.value == 'M':
+            print "=== Worker Process Tick ==="
