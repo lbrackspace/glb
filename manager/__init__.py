@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from multiprocessing import Process, Queue, current_process, Value
-from ctypes import c_bool
+from ctypes import c_bool, c_char_p
 
 from manager.models.glb import GlobalLoadbalancerModel
 from manager.processes.heartbeat import HeartbeatProcess
@@ -37,8 +37,13 @@ class Manager():
                                 {'master': 'M', 'slave': 'S', 'auto': 'A'}))
         except:
             self.priority = Value('c', 'A')
-        self.responses = Queue()
-        self.work_queue = Queue()
+        try:
+            self.last_poll_time = Value(c_char_p, config.get('manager',
+                                        'last_poll_time'))
+        except:
+            self.last_poll_time = Value(c_char_p, "2013-01-01 00:00:00")
+
+        self.response_queue = Queue()
         self.RUN = Value(c_bool, True)
 
         ### PROCESSES ###
@@ -46,11 +51,11 @@ class Manager():
                             args=(self.priority, self.tick_time, self.RUN))
         self.worker =    Process(target=self.start_worker, 
                             args=(self.priority, self.sessionmaker(),
-                                    self.work_queue, self.responses,
-                                    self.tick_time, self.RUN))
+                                self.response_queue, self.tick_time, 
+                                self.last_poll_time, self.config, self.RUN))
         self.responder = Process(target=self.start_responder, 
                             args=(self.priority, self.sessionmaker(),
-                                    self.responses, self.tick_time, self.RUN))
+                                self.response_queue, self.tick_time, self.RUN))
 
 
     def start_working(self):
@@ -78,10 +83,10 @@ class Manager():
         heartbeat = HeartbeatProcess(priority, tick, RUN)
         heartbeat.run()
 
-    def start_worker(self, priority, session, work_queue, response_queue, 
-                    tick, RUN):
-        worker = WorkerProcess(priority, session, work_queue, response_queue, 
-                        tick, RUN)
+    def start_worker(self, priority, session, response_queue, tick,
+                    last_poll_time, config, RUN):
+        worker = WorkerProcess(priority, session, response_queue, tick,
+                        last_poll_time, config, RUN)
         worker.run()
 
     def start_responder(self, priority, session, response_queue, tick, RUN):
