@@ -1,32 +1,33 @@
-from geolb.models.persistence import base, dcstats
+from geolb.models.persistence import base, dcstats, dclocation_enum
 from geolb.persistence.base import BaseService
 
 
 class DCStatsPersistence(BaseService):
-	def get_all(self, account_id, glb_id):
-		glbs = dcstats.DCStatusModel.query.filter_by(
-			glb_id=glb_id).all()
+	def get_all(self):
+		glbs = dcstats.DCStatModel.query.filter_by().all()
 		return glbs
 
-	def create(self, account_id, glb_id, in_stats):
+	def get(self, stat_id):
+		glbs = dcstats.DCStatModel.query.filter_by(id_=stat_id).first()
+		return glbs
 
+	def create(self, in_stats):
 		base.db.session.add(in_stats)
 		base.db.session.commit()
 		return in_stats
 
-
-class DCStatPersistence(BaseService):
-	def get(self, account_id, glb_id):
+	def update(self):
+		#:/
+		base.db.session.commit()
 		pass
 
-	def update(self, account_id, glb_id, in_glb):
+	def delete(self, stat_id):
 		pass
 
-	def delete(self, account_id, glb_id):
-		pass
+	def get_all_locations(self):
+		return dclocation_enum.DCLocationModel.query.all()
 
 
 class DCStatsPersistenceOps(object):
 	def __init__(self):
 		self.dsp = DCStatsPersistence(self)
-		self.dp = DCStatPersistence(self)

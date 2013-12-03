@@ -19,7 +19,7 @@ class GlobalLoadbalancersPersistence(BaseService):
 		#Status and cname will be updated in service once logical
 		# operations occur in service, update here for example purposes.
 		#in_glb.status = 'ACTIVE'
-		in_glb.cname = 'glb_{0}rackspace.net'.format(in_glb.id_)
+		in_glb.cname = 'glb_{0}.rackspace.net'.format(in_glb.id_)
 		base.db.session.commit()
 		return in_glb
 

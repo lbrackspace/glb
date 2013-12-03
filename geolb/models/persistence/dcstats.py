@@ -3,12 +3,12 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from geolb.models.persistence import base
 
 
-class DCStatusModel(base.Base, base.BaseModel):
+class DCStatModel(base.Base, base.BaseModel):
     #This model may not be needed
-    __tablename__ = 'dc_status'
+    __tablename__ = 'dc_stat'
     __table_args__ = {"useexisting": True}
 
-    TAG = 'dc_status'
+    TAG = 'dc_stat'
 
     id_ = Column('id', Integer, primary_key=True)
     glb_id = Column(Integer, ForeignKey("glb.id"))

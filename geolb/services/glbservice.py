@@ -43,16 +43,28 @@ class GlobalLoadbalancersService(BaseService):
 				weight = n.get('weight') if n.get('weight') is not None else 1
 				nm = node.NodeModel(ip_address=n.get('ip_address'),
 				                    type=n.get('type'),
-				                    ip_type=n.get('ip_type'),
-				                    monitor=mm, weight=weight, regions=regions)
+				                    ip_type=n.get('ip_type'), monitor=mm,
+				                    weight=weight, regions=regions)
 				nlist.append(nm)
+
+		#User should not be able to submit stats
 		dc_stats = []
 		dstats_json = glb_json.get('dc_stats')
-		for s in dstats_json:
-			dc_stats.append(dcstats.DCStatusModel(
+		if dstats_json is not None:
+			for s in dstats_json:
+				dc_stats.append(dcstats.DCStatModel(
 					location=s.get('location'),
 					status=s.get('status')))
-			
+		else:
+			#Function to populate stats for all
+			# locations defined for 'default' OFFLINE behaviour
+			locations = self.dcstatspersistence.dsp.get_all_locations()
+			for l in locations:
+				dc_stats.append(dcstats.DCStatModel(
+					location=l.name,
+					status="OFFLINE"))
+			pass
+
 		glbm = glb.GlobalLoadbalancerModel(
 			account_id=account_id, name=glb_json.get('name'),
 			dc_stats=dc_stats, algorithm=glb_json.get('algorithm'),
@@ -78,14 +90,12 @@ class GlobalLoadbalancerService(BaseService):
 		if glb_json.get('algorithm') is not None:
 			g.algorithm = glb_json.get('algorithm')
 		if glb_json.get('dc_stats') is not None:
-			statsList = []
 			stats = glb_json.get('dc_stats')
 			for s in stats:
-				statsList.append(dcstats.DCStatusModel(
-					location=s.get('location'),
-					status=s.get('status')))
-			g.dc_stats = statsList
-
+				for gs in g.dc_stats:
+					if gs.location == s.get('location'):
+						gs.location = s.get('location')
+						gs.status = s.get('status')
 
 		g = self.glbpersistence.gp.update(account_id, glb_id, g)
 		return g

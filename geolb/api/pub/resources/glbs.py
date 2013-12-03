@@ -28,7 +28,7 @@ class GlobalLoadbalancersResource(BaseResource):
         # service and let the services communicate between each other.
         glb = glbservice.GlobalLoadbalancersService()\
             .create(account_id, glb_json)
-        glb = {"glb": glb.to_dict()}
+        glb = {"glb": marshal([glb.to_dict()], Mappings.GLB_FIELDS)}
         return jsonify(glb)
 
 
@@ -37,7 +37,7 @@ class GlobalLoadbalancerResource(BaseResource):
     def get(self, account_id, glb_id):
         #Object validation, error handling etc...
         glb = glbservice.GlobalLoadbalancerService().get(account_id, glb_id)
-        return jsonify({"glb": glb.to_dict()})
+        return jsonify({"glb": marshal([glb.to_dict()], Mappings.GLB_FIELDS)})
 
     def put(self, account_id, glb_id):
         json_body = self.get_request_body(request)
@@ -45,10 +45,10 @@ class GlobalLoadbalancerResource(BaseResource):
         glb_json = json_body.get('glb')
         glb = glbservice.GlobalLoadbalancerService()\
             .update(account_id, glb_id, glb_json)
-        return jsonify({"glb": glb.to_dict()})
+        return jsonify({"glb": marshal([glb.to_dict()], Mappings.GLB_FIELDS)})
 
     def delete(self, account_id, glb_id):
         #Object validation, error handling etc...
         glb = glbservice.GlobalLoadbalancerService().delete(account_id, glb_id)
-        return jsonify({"glb": glb.to_dict()})
+        return jsonify({"glb": marshal([glb.to_dict()], Mappings.GLB_FIELDS)})
 

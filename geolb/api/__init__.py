@@ -30,8 +30,8 @@ from geolb.api.mgmt.resources import mgmt_glbs, mgmt_dc_stats
 api.add_resource(mgmt_glbs.MgmtGlobalLoadbalancersResource,
                  '/mgmt/<int:account_id>/glbs')
 
-api.add_resource(mgmt_dc_stats.MgmtDCStatResource,
-                 '/mgmt/<int:account_id>/glbs/<int:glb_id>/dcstats')
+api.add_resource(mgmt_dc_stats.MgmtDCStatsResource,
+                 '/mgmt/dcstats')
 
 
 #GLBs

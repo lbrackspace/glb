@@ -35,8 +35,8 @@ CREATE TABLE `monitor` (
     CONSTRAINT  `fk_m_node_id` FOREIGN KEY (node_id) REFERENCES `node`(id)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `dc_status`;
-CREATE TABLE `dc_status` (
+DROP TABLE IF EXISTS `dc_stat`;
+CREATE TABLE `dc_stat` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `glb_id` int(11) NOT NULL,
     `updated` timestamp DEFAULT CURRENT_TIMESTAMP,

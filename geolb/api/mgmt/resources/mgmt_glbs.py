@@ -7,7 +7,7 @@ from geolb.services import glbservice
 
 
 class MgmtGlobalLoadbalancersResource(BaseResource):
-
+    #Do other management type things with the lb resource...
     def get(self, account_id):
         #Object validation, error handling etc...
         glbs = glbservice.GlobalLoadbalancersService().get_all(account_id)

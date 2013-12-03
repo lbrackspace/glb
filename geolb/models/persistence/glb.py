@@ -17,7 +17,7 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
     cname = Column(String(128))
     algorithm = Column(String(32))
     status = Column(String(32))
-    dc_stats = relationship('DCStatusModel', backref='glb', lazy='dynamic')
+    dc_stats = relationship('DCStatModel', backref='glb', lazy='dynamic')
     create_time = Column(DateTime(timezone=True))
     update_time = Column(DateTime(timezone=True))
     nodes = relationship('NodeModel', backref='glb', lazy='dynamic',
