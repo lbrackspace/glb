@@ -99,3 +99,26 @@
         "status": "ACTIVE"
     }
 }
+
+
+##Update DCStats 'batch'
+#PUT /mgmt/dcstats
+{
+   "dc_stats":[{
+        "glb_id": 1,
+        "location": "ORD",
+        "status": "ONLINE"
+      }]
+}
+
+#Can also update dcstats in a glb update(Not reccomended and will be hidden from customers)
+{
+    "glb": {
+        "name": "test44",
+        "algorithm": "GEOIP",
+        "dc_stats":[{
+            "location": "ORD",
+            "status": "ONLINE"
+      }]
+    }
+}
