@@ -7,8 +7,9 @@ class DCStatsPersistence(BaseService):
 		glbs = dcstats.DCStatModel.query.filter_by().all()
 		return glbs
 
-	def get(self, stat_id):
-		glbs = dcstats.DCStatModel.query.filter_by(id_=stat_id).first()
+	def get(self, glb_id, location):
+		glbs = dcstats.DCStatModel.query\
+			.filter_by(glb_id=glb_id, location=location).first()
 		return glbs
 
 	def create(self, in_stats):

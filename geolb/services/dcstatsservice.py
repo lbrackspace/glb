@@ -17,7 +17,7 @@ class DCStatsService(BaseService):
 		if stats_json is not None:
 			for s in stats_json:
 				dc_stats.append(dcstats.DCStatModel(
-					location=s.get('location'),status=s.get('status'),
+					location=s.get('location'), status=s.get('status'),
 					glb_id=s.get('glb_id')))
 
 		dc_stats = self.dcstatspersistence.dsp.create(dc_stats)
@@ -25,14 +25,15 @@ class DCStatsService(BaseService):
 
 	def update(self, stats_json):
 		#Batch update..., heavy
-		dc_stats = []
 		if stats_json is not None:
 			for s in stats_json:
-				cstat = self.dcstatspersistence.dsp.get(s.get('id'))
+				cstat = self.dcstatspersistence.dsp.get(s.get('glb_id'),
+				                                        s.get('location'))
 				cstat.location = s.get('location')
 				cstat.status = s.get('status')
 				self.dcstatspersistence.dsp.update()
 		return True
+
 
 class DCStatsServiceOps(object):
 	def __init__(self):
