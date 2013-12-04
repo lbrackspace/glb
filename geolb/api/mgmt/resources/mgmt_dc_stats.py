@@ -7,7 +7,6 @@ from geolb.services import dcstatsservice
 
 
 class MgmtDCStatsResource(BaseResource):
-	#TODO: service class
 	def get(self):
 		pass
 

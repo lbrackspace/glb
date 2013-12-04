@@ -130,7 +130,7 @@ CREATE TABLE `node_region` (
 
 
 INSERT INTO `enum_glb_algorithm` VALUES('RANDOM', 'Random');
-INSERT INTO `enum_glb_algorithm` VALUES('GEOIP', 'GeoIP');
+INSERT INTO `enum_glb_algorithm` VALUES('GEO_IP', 'GeoIP');
 INSERT INTO `enum_glb_algorithm` VALUES('WEIGHTED', 'Weighted');
 INSERT INTO `enum_glb_algorithm` VALUES('LATENCY', 'Latency');
 INSERT INTO `enum_glb_algorithm` VALUES('POLICY', 'Policy');

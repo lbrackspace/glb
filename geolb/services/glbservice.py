@@ -24,7 +24,7 @@ class GlobalLoadbalancersService(BaseService):
 				regions_json = n.get('regions')
 				regions = []
 				#:/
-				if glb_json.get('algorithm') is 'GEOIP':
+				if glb_json.get('algorithm') is 'GEO_IP':
 					if regions_json is not None:
 						regs = self.regionpersistence.rsp.get_all()
 						if regs is not None:
