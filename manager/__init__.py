@@ -19,8 +19,8 @@ class Manager():
         config = ConfigParser.SafeConfigParser()
         config.read([filename])
         self.sqlDB = 'mysql://%s:%s@%s/%s' % (
-            config.get('api', 'username'), config.get('api', 'password'),
-            config.get('api', 'address'), config.get('api', 'dbname'))
+            config.get('manager', 'username'), config.get('manager', 'password'),
+            config.get('manager', 'address'), config.get('manager', 'dbname'))
         self.config = config
 
         ### SQL ###
@@ -29,7 +29,7 @@ class Manager():
 
         ### SHARED DATA ###
         try:
-            self.tick_time = Value('i', int(config.get('manager', 'tick_time')))
+            self.tick_time = Value('i', config.getint('manager', 'tick_time'))
         except:
             self.tick_time = Value('i', 5)
         try:
@@ -42,13 +42,25 @@ class Manager():
                                         'last_poll_time'))
         except:
             self.last_poll_time = Value(c_char_p, "2013-01-01 00:00:00")
+        self.other_servers = {}
+        try:
+            servers = config.get('manager', 'other_servers')
+            for s in servers.split(','):
+                self.other_servers[s.strip()] = { 'ip': s.strip(), 'priority': 'D' }
+        except:
+            pass
+        try:
+            self.port = config.getint('manager', 'port')
+        except:
+            self.port = 5050
 
         self.response_queue = Queue()
         self.RUN = Value(c_bool, True)
 
         ### PROCESSES ###
         self.heartbeat = Process(target=self.start_heartbeat,
-                            args=(self.priority, self.tick_time, self.RUN))
+                            args=(self.port, self.other_servers, self.priority, 
+                                self.tick_time, self.last_poll_time, self.RUN))
         self.worker =    Process(target=self.start_worker, 
                             args=(self.priority, self.sessionmaker(),
                                 self.response_queue, self.tick_time, 
@@ -79,9 +91,12 @@ class Manager():
     def stop_working(self):
         self.RUN.value = False
 
-    def start_heartbeat(self, priority, tick, RUN):
-        heartbeat = HeartbeatProcess(priority, tick, RUN)
-        heartbeat.run()
+    def start_heartbeat(self, port, other_servers, priority, tick, last_poll, RUN):
+        heartbeat = HeartbeatProcess(port, other_servers, priority, tick, last_poll, RUN)
+        try:
+            heartbeat.run()
+        except:
+            heartbeat.stop_heartbeat()
 
     def start_worker(self, priority, session, response_queue, tick,
                     last_poll_time, config, RUN):
