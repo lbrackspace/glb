@@ -6,7 +6,6 @@ from flask.ext.restful import Resource
 
 
 class BaseResource(Resource):
-
     def __init__(self):
         #Can set configurations and other resource options here...
         pass

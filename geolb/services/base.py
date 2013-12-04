@@ -8,7 +8,6 @@ from geolb.persistence.dcstats_persistence import DCStatsPersistenceOps
 
 
 class BaseService(Resource):
-
     def __init__(self):
         self.glbpersistence = GlbPersistenceOps()
         self.nodepersistence = NodePersistenceOps()

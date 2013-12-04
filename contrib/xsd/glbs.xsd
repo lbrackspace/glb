@@ -44,7 +44,7 @@
             <xs:attribute ref="threshold" use="required"/>
         </xs:complexType>
     </xs:element>
-     <xs:element name="nameServers">
+    <xs:element name="nameServers">
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="nameServer"/>

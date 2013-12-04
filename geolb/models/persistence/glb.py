@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 
 from geolb.models.persistence import base
 
+
 class GlobalLoadbalancerModel(base.Base, base.BaseModel):
     __tablename__ = 'glb'
     __table_args__ = {"useexisting": True}
@@ -44,7 +45,7 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
 
     def to_dict(self):
         dc_stats_dict = [item.to_dict() for item in self.dc_stats
-                      if item is not None]
+                         if item is not None]
 
         nodes_dict = [item.to_dict() for item in self.nodes
                       if item is not None]
@@ -53,9 +54,9 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
                     'algorithm': self.algorithm,
                     'status': self.status,
                     'create_time':
-	                    self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+                        self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
                     'update_time':
-	                    self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
+                        self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
                     'nodes': nodes_dict,
                     'dc_stats': dc_stats_dict}
         return glb_dict

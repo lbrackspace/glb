@@ -54,6 +54,4 @@ api.add_resource(monitor.MonitorResource,
 #Regions
 api.add_resource(regions.RegionsResource, '/<int:account_id>/regions')
 
-
-
 base.db.init_app(app)

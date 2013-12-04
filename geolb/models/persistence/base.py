@@ -6,6 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 db = SQLAlchemy()
 
+
 class BaseModel(object):
     def to_json(self):
         if not hasattr(self, 'TAG'):

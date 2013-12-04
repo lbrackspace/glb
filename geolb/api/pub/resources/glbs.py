@@ -7,7 +7,6 @@ from geolb.services import glbservice
 
 
 class GlobalLoadbalancersResource(BaseResource):
-
     def get(self, account_id):
         #Object validation, error handling etc...
         glbs = glbservice.GlobalLoadbalancersService().get_all(account_id)
@@ -26,14 +25,13 @@ class GlobalLoadbalancersResource(BaseResource):
         ##Do hydrated object here calling each service to
         # validate and create object, or send hydrated glb to
         # service and let the services communicate between each other.
-        glb = glbservice.GlobalLoadbalancersService()\
+        glb = glbservice.GlobalLoadbalancersService() \
             .create(account_id, glb_json)
         glb = {"glb": marshal([glb.to_dict()], Mappings.GLB_FIELDS)}
         return jsonify(glb)
 
 
 class GlobalLoadbalancerResource(BaseResource):
-
     def get(self, account_id, glb_id):
         #Object validation, error handling etc...
         glb = glbservice.GlobalLoadbalancerService().get(account_id, glb_id)
@@ -43,7 +41,7 @@ class GlobalLoadbalancerResource(BaseResource):
         json_body = self.get_request_body(request)
         #Object validation, error handling etc...
         glb_json = json_body.get('glb')
-        glb = glbservice.GlobalLoadbalancerService()\
+        glb = glbservice.GlobalLoadbalancerService() \
             .update(account_id, glb_id, glb_json)
         return jsonify({"glb": marshal([glb.to_dict()], Mappings.GLB_FIELDS)})
 

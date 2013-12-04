@@ -30,4 +30,5 @@ class DCStatusModel(base.Base, base.BaseModel):
 
     def __repr__(self):
         return '<DCStatus %d (%s / %s): %s>' % (self.glb_id,
-                        self.updated, self.location, self.status)
+                                                self.updated, self.location,
+                                                self.status)

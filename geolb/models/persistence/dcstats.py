@@ -30,5 +30,6 @@ class DCStatModel(base.Base, base.BaseModel):
 
     def __repr__(self):
         return '<dc_status %s (%s / %s): %s>' % (self.glb_id,
-                        self.updated.strftime("%Y-%m-%d %H:%M:%S"),
-                        self.location, self.status)
+                                                 self.updated.strftime(
+                                                     "%Y-%m-%d %H:%M:%S"),
+                                                 self.location, self.status)

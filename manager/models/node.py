@@ -5,8 +5,9 @@ from manager.models import base, region
 
 #its own class?
 nodes_regions = Table('node_region', base.Base.metadata,
-    Column('node_id', Integer, ForeignKey('node.id')),
-    Column('region_id', Integer, ForeignKey('enum_node_region.id'))
+                      Column('node_id', Integer, ForeignKey('node.id')),
+                      Column('region_id', Integer,
+                             ForeignKey('enum_node_region.id'))
 )
 
 
@@ -38,8 +39,7 @@ class NodeModel(base.Base, base.BaseModel):
 
     def to_dict(self):
         regions_dict = [item.to_dict() for item in self.regions
-                       if item is not None]
-
+                        if item is not None]
 
         node_dict = {'id': self.id_, 'ip_address': self.ip_address,
                      'type': self.type, 'ip_type': self.ip_type,

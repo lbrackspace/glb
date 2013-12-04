@@ -3,7 +3,6 @@ from geolb.persistence.base import BaseService
 
 
 class NameServersPersistence(BaseService):
-
     def get_all(self):
         ns = nameserver.NameserverModel.query.all()
         ns_list = [n.to_dict() for n in ns]
@@ -18,7 +17,6 @@ class NameServersPersistence(BaseService):
 
 
 class NameServerPersistence(BaseService):
-
     def get(self, id):
         n = nameserver.NameserverModel.query.filter_by(id_=id).first()
         return n
