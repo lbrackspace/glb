@@ -51,15 +51,15 @@ class WorkerProcess():
     def send_data_pdns(self, glbs):
         #data should be strings of required information following the
         # custom protocol found here:
-        # https://one.rackspace.com/display/
-        # compute/Data+Controller+Message+Processing
-
+        # https://one.rackspace.com/display/compute/Data+Controller+Message+Processing
         #do stuff
-
-        return "ADD_DOMAIN PASSED: glb_13.rackexp.org\n " \
-               "SNAPSHOT PASSED: glb_13.rackexp.org  a4-30-10.1.1.1-1"
+        ret = ""
+        for glb in glbs:
+            ret += "ADD_DOMAIN PASSED: %s\n" % (glb.cname,)
+            ret +=   "SNAPSHOT PASSED: %s a4-30-10.1.1.1-1\n" % (glb.cname,)
+        return ret
 
     def update_poll_time(self, lpt):
-        self.last_poll_time.value = lpt
+        self.last_poll_time = Value(c_char_p, lpt)
         self.config.set('manager', 'last_poll_time', lpt)
         self.config.write(open('config.cfg', 'wb'))

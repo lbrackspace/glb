@@ -7,7 +7,6 @@ import socket
 import subprocess
 import traceback
 
-
 class HeartbeatProcess():
     def __init__(self, port, others, priority, tick, last_poll, RUN):
         self.port = port
@@ -61,8 +60,7 @@ class HeartbeatProcess():
                         self.others[s]['ip'] = s
                         if old_p != 'D':
                             print "Failed to communicate with %s, discarding " \
-                                  "it." % (
-                            s,)
+                                  "it." % (s,)
                         if old_p == 'M':
                             print "Old master dropped, autonegotiating..."
                             self.priority.value = 'A'
@@ -87,8 +85,7 @@ class HeartbeatProcess():
                     except Exception as e:
                         #print traceback.format_exc()
                         print "Failed to communicate with %s, discarding it."\
-                              % (
-                        s,)
+                              % (s,)
                         self.others[s]['priority'] = 'D'
                         self.others[s]['ip'] = s
                 if len(self.others) > 0:
@@ -107,12 +104,11 @@ class HeartbeatProcess():
                     self.priority.value = 'M'
                     print "No other heartbeat servers, becoming master."
             for n in auto_add.keys():
-                if not self.others.has_key(n):
-                    self.others[n] = {'priority': auto_add[n], 'ip': n}
+                if n not in self.others:
+                    self.others[n] = { 'priority': auto_add[n], 'ip': n }
                     if auto_add[n] == 'M':
                         print "New master joined the pool: %s, reverting to " \
-                              "slave mode." % (
-                        n,)
+                              "slave mode." % (n,)
                         self.priority.value = 'S'
 
     def listen(self):
@@ -124,13 +120,12 @@ class HeartbeatProcess():
         status = "<-- HEARTBEAT --> [ "
         for k in self.others.keys():
             status += k + " (" + self.others[k]['priority'] + "), "
-        status = status[:-2] + ' ]'
+        status = status[:status.rfind(",")] + ' ]'
         print status
         self.autonegotiate()
 
     def stop_heartbeat(self):
         self.server.shutdown()
-
 
 class HeartbeatRequestHandler(SocketServer.BaseRequestHandler):
     def setup(self):
@@ -138,12 +133,11 @@ class HeartbeatRequestHandler(SocketServer.BaseRequestHandler):
 
     def handle(self):
         message = recv_packet(self.request)
-        if not self.server.others.has_key(message['ip']):
+        if message['ip'] not in self.server.others:
             if message['priority'] == "M":
                 self.server.priority.value = "S"
                 print "New master joined the pool: %s, reverting to slave " \
-                      "mode." % (
-                message['ip'],)
+                      "mode." % (message['ip'],)
             else:
                 print "New server joined the pool: %s" % (message['ip'],)
         elif self.server.others[message['ip']]['priority'] == 'D':
@@ -154,7 +148,6 @@ class HeartbeatRequestHandler(SocketServer.BaseRequestHandler):
                     self.server.others)
         #print "Received Heartbeat from %s." % (self.client_address[0],)
         return
-
 
 class SimpleServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     daemon_threads = True
@@ -168,18 +161,16 @@ class SimpleServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
         SocketServer.TCPServer.__init__(self, server_address,
                                         RequestHandlerClass)
 
-
 def send_packet(socket, priority, poll, others):
     others_list = {}
     for o in others.keys():
         #print socket.getpeername(), others[o]
         others_list[others[o]['ip']] = others[o]['priority']
-    packet = {'ip': socket.getsockname()[0],
-              'priority': priority.value,
-              'last_poll': poll.value,
-              'known_others': others_list}
-    socket.send(json.dumps(packet) + "EOT")
-
+    packet = {  'ip': socket.getsockname()[0],
+                'priority': priority.value, 
+                'last_poll': poll.value,
+                'known_others': others_list }
+    socket.send(json.dumps(packet)+"EOT")
 
 def recv_packet(socket):
     message = ""

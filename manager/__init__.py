@@ -13,7 +13,6 @@ from manager.processes.responder import ResponderProcess
 
 filename = 'config.cfg'
 
-
 class Manager():
     def __init__(self):
         ### CONFIGURATION ###
@@ -22,7 +21,8 @@ class Manager():
         self.sqlDB = 'mysql://%s:%s@%s/%s' % (
             config.get('manager', 'username'),
             config.get('manager', 'password'),
-            config.get('manager', 'address'), config.get('manager', 'dbname'))
+            config.get('manager', 'address'),
+            config.get('manager', 'dbname'))
         self.config = config
 
         ### SQL ###
@@ -45,8 +45,8 @@ class Manager():
                                                              'last_poll_time'))
         except:
             self.last_poll_time = Value(c_char_p, "2013-01-01 00:00:00")
-        self.other_servers = {}
         try:
+            self.other_servers = {}
             servers = config.get('manager', 'other_servers')
             for s in servers.split(','):
                 self.other_servers[s.strip()] = {'ip': s.strip(),
@@ -57,23 +57,29 @@ class Manager():
             self.port = config.getint('manager', 'port')
         except:
             self.port = 5050
+        try:
+            self.location = config.get('manager', 'location')
+        except:
+            self.location = "DEFAULT"
+        self.api_node = { 'host': config.get('manager', 'api_node'),
+                          'auth': config.get('manager', 'api_auth'),
+                          'path': config.get('manager', 'api_bulk') }
 
         self.response_queue = Queue()
         self.RUN = Value(c_bool, True)
 
         ### PROCESSES ###
         self.heartbeat = Process(target=self.start_heartbeat,
-                                 args=(
-                                 self.port, self.other_servers, self.priority,
-                                 self.tick_time, self.last_poll_time, self.RUN))
-        self.worker = Process(target=self.start_worker,
-                              args=(self.priority, self.sessionmaker(),
-                                    self.response_queue, self.tick_time,
-                                    self.last_poll_time, self.config, self.RUN))
-        self.responder = Process(target=self.start_responder,
-                                 args=(self.priority, self.sessionmaker(),
-                                       self.response_queue, self.tick_time,
-                                       self.RUN))
+                            args=(self.port, self.other_servers, self.priority, 
+                                self.tick_time, self.last_poll_time, self.RUN))
+        self.worker =    Process(target=self.start_worker, 
+                            args=(self.priority, self.sessionmaker(),
+                                self.response_queue, self.tick_time, 
+                                self.last_poll_time, self.config, self.RUN))
+        self.responder = Process(target=self.start_responder, 
+                            args=(self.priority, self.sessionmaker(),
+                                self.response_queue, self.location,
+                                self.api_node, self.tick_time, self.RUN))
 
 
     def start_working(self):
@@ -112,9 +118,9 @@ class Manager():
                                last_poll_time, config, RUN)
         worker.run()
 
-    def start_responder(self, priority, session, response_queue, tick, RUN):
-        responder = ResponderProcess(priority, session, response_queue,
-                                     tick, RUN)
+    def start_responder(self, priority, session, response_queue, location, api_node, tick, RUN):
+        responder = ResponderProcess(priority, session, response_queue, 
+                        location, api_node, tick, RUN)
         responder.run()
 
     ### Testing DB ###
