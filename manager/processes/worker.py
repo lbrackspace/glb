@@ -57,6 +57,6 @@ class WorkerProcess():
 		       "SNAPSHOT PASSED: glb_13.rackexp.org  a4-30-10.1.1.1-1"
 
 	def update_poll_time(self, lpt):
-		self.last_poll_time = Value(c_char_p, lpt)
+		self.last_poll_time.value = lpt
 		self.config.set('manager', 'last_poll_time', lpt)
 		self.config.write(open('config.cfg', 'wb'))
