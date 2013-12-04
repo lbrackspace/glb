@@ -7,9 +7,8 @@ from manager.models.dcstats import DCStatusModel as DCStats
 
 
 class ResponderProcess():
-    def __init__(self, priority, session, response_queue, location, api_node, tick, RUN):
+    def __init__(self, priority, response_queue, location, api_node, tick, RUN):
         self.priority = priority
-        self.session = session
         self.response_queue = response_queue
         self.location = location
         self.api_node = api_node

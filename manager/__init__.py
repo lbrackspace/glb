@@ -73,11 +73,11 @@ class Manager():
                             args=(self.port, self.other_servers, self.priority, 
                                 self.tick_time, self.last_poll_time, self.RUN))
         self.worker =    Process(target=self.start_worker, 
-                            args=(self.priority, self.sessionmaker(),
+                            args=(self.priority, self.sessionmaker,
                                 self.response_queue, self.tick_time, 
                                 self.last_poll_time, self.config, self.RUN))
         self.responder = Process(target=self.start_responder, 
-                            args=(self.priority, self.sessionmaker(),
+                            args=(self.priority,
                                 self.response_queue, self.location,
                                 self.api_node, self.tick_time, self.RUN))
 
@@ -112,14 +112,14 @@ class Manager():
         except:
             heartbeat.stop_heartbeat()
 
-    def start_worker(self, priority, session, response_queue, tick,
+    def start_worker(self, priority, sessionmaker, response_queue, tick,
                      last_poll_time, config, RUN):
-        worker = WorkerProcess(priority, session, response_queue, tick,
+        worker = WorkerProcess(priority, sessionmaker, response_queue, tick,
                                last_poll_time, config, RUN)
         worker.run()
 
-    def start_responder(self, priority, session, response_queue, location, api_node, tick, RUN):
-        responder = ResponderProcess(priority, session, response_queue, 
+    def start_responder(self, priority, response_queue, location, api_node, tick, RUN):
+        responder = ResponderProcess(priority, response_queue,
                         location, api_node, tick, RUN)
         responder.run()
 

@@ -15,7 +15,7 @@ class GlobalLoadbalancersPersistence(BaseService):
             n.status = 'ONLINE'
 
         base.db.session.add(in_glb)
-        base.db.session.commit()
+        base.db.session.flush()
         #Status and cname will be updated in service once logical
         # operations occur in service, update here for example purposes.
         #in_glb.status = 'ACTIVE'

@@ -62,4 +62,4 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
         return glb_dict
 
     def __repr__(self):
-        return '<GLB %r>' % self.name
+        return '<GLB %r - %r >' % (self.name, self.cname)
