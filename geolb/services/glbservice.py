@@ -68,7 +68,7 @@ class GlobalLoadbalancersService(BaseService):
         glbm = glb.GlobalLoadbalancerModel(
             account_id=account_id, name=glb_json.get('name'),
             dc_stats=dc_stats, algorithm=glb_json.get('algorithm'),
-            nodes=nlist, status='BUILD')
+            nodes=nlist, status='BUILD', update_type='CREATE')
 
         g = self.glbpersistence.gsp.create(account_id, glbm)
 
@@ -89,14 +89,7 @@ class GlobalLoadbalancerService(BaseService):
             g.name = glb_json.get('name')
         if glb_json.get('algorithm') is not None:
             g.algorithm = glb_json.get('algorithm')
-        if glb_json.get('dc_stats') is not None:
-            stats = glb_json.get('dc_stats')
-            for s in stats:
-                for gs in g.dc_stats:
-                    if gs.location == s.get('location'):
-                        gs.location = s.get('location')
-                        gs.status = s.get('status')
-
+            g.update_type = 'FULL'
         g = self.glbpersistence.gp.update(account_id, glb_id, g)
         return g
 

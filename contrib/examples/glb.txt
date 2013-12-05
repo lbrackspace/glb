@@ -107,7 +107,8 @@
    "dc_stats":[{
         "glb_id": 1,
         "location": "ORD",
-        "status": "ONLINE"
+        "status": "ONLINE",
+        "response": "A message can go here"
       }]
 }
 

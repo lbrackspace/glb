@@ -1,5 +1,6 @@
 import time
 import signal
+import socket
 
 from multiprocessing import Value
 from ctypes import c_bool, c_char_p
@@ -50,16 +51,42 @@ class WorkerProcess():
         session.close()
 
     def send_data_pdns(self, glbs):
-        #data should be strings of required information following the
-        # custom protocol found here:
-        # https://one.rackspace.com/display/compute/Data+Controller+Message+Processing
-        #do stuff
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(("127.0.0.1", 8888))
+        fp = s.makefile("rw")
+
         ret = ""
         for glb in glbs:
-            ret += "ADD_DOMAIN PASSED: %s\n" % (glb.cname,)
-            ret +=   "SNAPSHOT PASSED: %s a4-30-10.1.1.1-1\n" % (glb.cname,)
+            update_type = glb.update_type
+            if update_type is not 'NONE':
+                if update_type is 'FULL':
+                    self.del_domain(fp, glb.cname)
+                if update_type is 'CREATE':
+                    self.add_domain(fp, glb.cname, glb.algorithm)
+                self.add_snapshot(fp, glb)
+
+        fp.write("\nOVER\n")
+        fp.flush()
+        while True:
+            line = fp.readline()
+            ret += line
+            if line == "OVER\n":
+                break
         print glbs
         return ret
+
+    def add_domain(self, fp, cname, algo):
+        fp.write("ADD_DOMAIN %s %s\n" % (cname, algo))
+
+    def del_domain(self, fp, cname):
+        fp.write("DEL_DOMAIN %s\n" % (cname))
+
+    def add_snapshot(self, fp, glb):
+        nlist = []
+        for n in glb.nodes:
+            nlist.append('%s-%s-%s-%s' % (n.ip_type, n.ttl, n.ip_address,
+                                          n.weight))
+        fp.write("SNAPSHOT %s %s\n" % (glb.cname, ' '.join(nlist)))
 
     def update_poll_time(self, lpt):
         self.last_poll_time = Value(c_char_p, lpt)

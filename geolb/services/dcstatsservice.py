@@ -18,7 +18,7 @@ class DCStatsService(BaseService):
             for s in stats_json:
                 dc_stats.append(dcstats.DCStatModel(
                     location=s.get('location'), status=s.get('status'),
-                    glb_id=s.get('glb_id')))
+                    glb_id=s.get('glb_id'), response=s.get('response')))
 
         dc_stats = self.dcstatspersistence.dsp.create(dc_stats)
         return dc_stats
@@ -27,13 +27,35 @@ class DCStatsService(BaseService):
         #Batch update..., heavy
         if stats_json is not None:
             for s in stats_json:
-                #Can get glb and update status on it here
-                # if all dc_stats are ONLINE
-                cstat = self.dcstatspersistence.dsp.get(s.get('glb_id'),
-                                                        s.get('location'))
-                cstat.location = s.get('location')
-                cstat.status = s.get('status')
-                self.dcstatspersistence.dsp.update()
+                g_id = s.get('glb_id')
+                location = s.get('location')
+                response = s.get('response')
+
+                #glb operations currently ignores account_id, should have an
+                # 'admin' get by id and other admin type calls
+                g = self.glbpersistence.gp.get(1, g_id)
+                g.update_type = 'NONE'
+                #cstat = self.dcstatspersistence.dsp.get(s.get('glb_id'),
+                #                                        s.get('location'))
+                for ds in g.dc_stats:
+                    if location in ds.location:
+                        ds.location = s.get('location')
+                        ds.status = s.get('status')
+                        ds.response = s.get('response')
+
+                        #should probably do this elsewhere,
+                        # get data elsehow/differently,
+                        # also need to check for errors etc..
+                        os = self.dcstatspersistence.get_online_dcstats(1, g_id)
+                        es = self.dcstatspersistence.get_error_dcstats(1, g_id)
+                        if len(os) == len(glb.dc_stats):
+                            g.status = 'ACTIVE'
+                        else:
+                            if es:
+                                g.status = 'ERROR'
+
+                        self.glbpersistence.gp.update(1, g_id, g)
+            #What to return?
         return True
 
 

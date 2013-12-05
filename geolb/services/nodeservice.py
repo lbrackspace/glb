@@ -45,6 +45,8 @@ class NodeService(BaseService):
 
     def update(self, account_id, glb_id, node_id, node_json):
         #Logical validation and other operations
+        #Need to update glb update_type to 'UPDATE' to
+        # propagate the records changes
         n = self.nodepersistence.np.get(node_id)
         if node_json.get('ip_address') is not None:
             n.ip_address = node_json.get('ip_address')

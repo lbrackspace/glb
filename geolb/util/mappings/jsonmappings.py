@@ -20,7 +20,8 @@ class Mappings(object):
     'id': fields.String,
     'location': fields.String,
     'updated': fields.String,
-    'status': fields.String
+    'status': fields.String,
+    'response': fields.String
     }
 
     REGION_FIELDS = {
@@ -60,6 +61,7 @@ class Mappings(object):
     'update_time': fields.String,
     'algorithm': fields.String,
     'status': fields.String,
+    'update_type': fields.String,
     'nodes': fields.Nested(NODE_FIELDS),
     'dc_stats': fields.Nested(DC_STATS_FIELDS),
     }

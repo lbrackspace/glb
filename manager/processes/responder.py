@@ -51,6 +51,7 @@ class ResponderProcess():
                 stat['glb_id'] = resp[resp.find("glb_")+4:resp.find(".")]
                 stat['location'] = self.location
                 dcstats["dc_stats"].append(stat)
+                #Need to handle error and 'response'
 
         api_url = ''.join((self.api_node['host'], self.api_node['path']))
         headers = {'X-Auth-Token': self.api_node['auth'] }

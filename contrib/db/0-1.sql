@@ -42,6 +42,7 @@ CREATE TABLE `dc_stat` (
     `updated` timestamp DEFAULT CURRENT_TIMESTAMP,
     `location` varchar(16) DEFAULT NULL,
     `status` varchar(16) DEFAULT NULL,
+    `response` varchar(128) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `glb_updated_loc` (glb_id,location,updated),
     CONSTRAINT `fk_dc_status` FOREIGN KEY (status) REFERENCES `enum_dc_status`(name),
@@ -59,8 +60,10 @@ CREATE TABLE `glb` (
     `status` varchar(32) DEFAULT NULL,
     `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_type` varchar(32) DEFAULT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_g_status` FOREIGN KEY (status) REFERENCES `enum_glb_status`(name),
+    CONSTRAINT `fk_g_ut` FOREIGN KEY (update_type) REFERENCES `enum_update_type`(name),
     CONSTRAINT  `fk_g_algo` FOREIGN KEY (algorithm) REFERENCES `enum_glb_algorithm`(name)
 ) ENGINE=InnoDB;
 
@@ -73,7 +76,14 @@ CREATE TABLE `enum_glb_algorithm` (
 
 DROP TABLE IF EXISTS `enum_glb_status`;
 CREATE TABLE `enum_glb_status` (
-    `name` varchar(16) DEFAULT NULL,
+    `name` varchar(32) DEFAULT NULL,
+    `description` varchar(128) DEFAULT NULL,
+    PRIMARY KEY (`name`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `enum_update_type`;
+CREATE TABLE `enum_update_type` (
+    `name` varchar(32) DEFAULT NULL,
     `description` varchar(128) DEFAULT NULL,
     PRIMARY KEY (`name`)
 ) ENGINE=InnoDB;
@@ -145,12 +155,19 @@ INSERT INTO `enum_glb_status` VALUES('PENDING_UPDATE', 'Pending Update');
 INSERT INTO `enum_glb_status` VALUES('QUEUE', 'Queue');
 INSERT INTO `enum_glb_status` VALUES('NONE', 'Nada');
 
+INSERT INTO `enum_update_type` VALUES('DELETE', 'Delete domain and records');
+INSERT INTO `enum_update_type` VALUES('CREATE', 'Add domain and records');
+INSERT INTO `enum_update_type` VALUES('UPDATE', 'Update a domains records');
+INSERT INTO `enum_update_type` VALUES('FULL', 'Delete old domain definition and add new domain and records');
+INSERT INTO `enum_update_type` VALUES('NONE', 'No records or domains to update');
+
 INSERT INTO `enum_node_status` VALUES('OFFLINE', 'Node is offline');
 INSERT INTO `enum_node_status` VALUES('ONLINE', 'Node is online');
 INSERT INTO `enum_node_status` VALUES('UNKNOWN', 'Node is in an unknown status');
 
 INSERT INTO `enum_dc_status` VALUES('OFFLINE', 'Node is offline for this DC');
 INSERT INTO `enum_dc_status` VALUES('ONLINE', 'Node is online for this DC');
+INSERT INTO `enum_dc_status` VALUES('ERROR', 'Node is online for this DC');
 INSERT INTO `enum_dc_status` VALUES('UNKNOWN', 'Node is in an unknown status for this DC');
 
 INSERT INTO `enum_dc_location` VALUES('DFW', 'DFW Region');

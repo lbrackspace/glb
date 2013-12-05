@@ -18,6 +18,7 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
     cname = Column(String(128))
     algorithm = Column(String(32))
     status = Column(String(32))
+    update_type = Column(String(32))
     dc_stats = relationship('DCStatModel', backref='glb', lazy='dynamic')
     create_time = Column(DateTime(timezone=True))
     update_time = Column(DateTime(timezone=True))
@@ -25,13 +26,14 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
                          cascade="all,delete")
 
     def __init__(self, account_id=None, name=None, cname=None, status=None,
-                 dc_stats=[], algorithm=None, create_time=None,
-                 update_time=None, nodes=[]):
+                 update_type=None, dc_stats=[], algorithm=None,
+                 create_time=None, update_time=None, nodes=[]):
         self.account_id = account_id
         self.name = name
         self.cname = cname
         self.algorithm = algorithm
         self.status = status
+        self.update_type = update_type
         self.dc_stats = dc_stats
         if create_time is None:
             self.create_time = datetime.datetime.utcnow()
@@ -53,6 +55,7 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
         glb_dict = {'id': self.id_, 'name': self.name, 'cname': self.cname,
                     'algorithm': self.algorithm,
                     'status': self.status,
+                    'update_type': self.update_type,
                     'create_time':
                         self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
                     'update_time':
