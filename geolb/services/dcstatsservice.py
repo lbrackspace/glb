@@ -1,3 +1,5 @@
+import datetime
+
 from geolb.services.base import BaseService
 from geolb.models.persistence import glb, node, monitor, region, dcstats
 
@@ -35,9 +37,22 @@ class DCStatsService(BaseService):
                 # 'admin' get by id and other admin type calls
                 g = self.glbpersistence.gp.get(1, g_id)
                 g.update_type = 'NONE'
+                g.update_time = datetime.datetime.utcnow()
                 #cstat = self.dcstatspersistence.dsp.get(s.get('glb_id'),
                 #                                        s.get('location'))
+
+                error = []
+                offline = []
+                active =[]
                 for ds in g.dc_stats:
+                    #:P
+                    if 'ERROR' in ds.status:
+                        error.append(ds)
+                    if 'OFFLINE' in ds.status:
+                        offline.append(ds)
+                    if 'ONLINE' in ds.status:
+                        active.append(ds)
+
                     if location in ds.location:
                         ds.location = s.get('location')
                         ds.status = s.get('status')
@@ -47,10 +62,10 @@ class DCStatsService(BaseService):
                         # get data elsehow/differently,
                         # also need to check for errors etc..
 
-                if 'ERROR' in g.dc_stats:
+                if error:
                     g.status = 'ERROR'
                 else:
-                    if not 'OFFLINE' in g.dc_stats:
+                    if not offline:
                         g.status = 'ACTIVE'
 
                 self.glbpersistence.gp.update(1, g_id, g)

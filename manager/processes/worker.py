@@ -58,10 +58,10 @@ class WorkerProcess():
         ret = ""
         for glb in glbs:
             update_type = glb.update_type
-            t = ''
             if update_type != 'NONE':
                 if update_type == 'FULL':
                     self.del_domain(fp, glb.cname)
+                    self.add_domain(fp, glb.cname, glb.algorithm)
                 if update_type == 'CREATE' or update_type is None:
                     self.add_domain(fp, glb.cname, glb.algorithm)
                 self.add_snapshot(fp, glb)

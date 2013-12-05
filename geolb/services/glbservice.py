@@ -1,3 +1,5 @@
+import datetime
+
 from geolb.services.base import BaseService
 from geolb.models.persistence import glb, node, monitor, region, dcstats
 
@@ -87,9 +89,12 @@ class GlobalLoadbalancerService(BaseService):
         g = self.glbpersistence.gp.get(account_id, glb_id)
         if glb_json.get('name') is not None:
             g.name = glb_json.get('name')
+            g.update_type = 'NONE'
         if glb_json.get('algorithm') is not None:
             g.algorithm = glb_json.get('algorithm')
             g.update_type = 'FULL'
+
+        g.update_time = datetime.datetime.utcnow()
         g = self.glbpersistence.gp.update(account_id, glb_id, g)
         return g
 
