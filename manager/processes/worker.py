@@ -1,6 +1,7 @@
 import time
 import signal
 import socket
+import json
 
 from multiprocessing import Value
 from ctypes import c_bool, c_char_p
@@ -10,13 +11,15 @@ from manager.models.dcstats import DCStatusModel as DCStats
 
 
 class WorkerProcess():
-    def __init__(self, priority, sessionmaker, response_queue,
-                 tick, last_poll_time, config, RUN):
+    def __init__(self, priority, sessionmaker, pdns_servers,
+                 pdns_port, response_queue, tick, last_poll_time, config, RUN):
         self.priority = priority
         self.sessionmaker = sessionmaker
         self.response_queue = response_queue
         self.tick_time = tick
         self.last_poll_time = last_poll_time
+        self.pdns_servers = pdns_servers
+        self.pdns_port = pdns_port
         self.config = config
         self.RUN = RUN
         print "Initialized Worker Process."
@@ -39,10 +42,13 @@ class WorkerProcess():
             if glbs:
                 print "== Worker Process: Processing %d glbs ==" % len(glbs)
                 # Send the data to pDNS
-                resp = self.send_data_pdns(glbs)
-
-                #reponder will handle the response
-                self.response_queue.put(resp)
+                responses = {}
+                for server in json.loads(self.pdns_servers.value):
+                    try:
+                        responses[server] = self.send_data_pdns(glbs, server)
+                    except:
+                        responses[server] = "" #Need to decide what to do here
+                self.response_queue.put(responses)
 
                 self.update_poll_time(glbs[0].update_time.__str__())
             else:
@@ -50,9 +56,8 @@ class WorkerProcess():
             print "=== Worker Process Tick - STOP ==="
         session.close()
 
-    def send_data_pdns(self, glbs):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(("127.0.0.1", 8888))
+    def send_data_pdns(self, glbs, server):
+        s = socket.create_connection((server, self.pdns_port))
         fp = s.makefile("rw")
 
         ret = ""
@@ -61,18 +66,18 @@ class WorkerProcess():
             if update_type != 'NONE':
                 if update_type == 'FULL':
                     self.del_domain(fp, glb.cname)
-                    self.add_domain(fp, glb.cname, glb.algorithm)
-                if update_type == 'CREATE' or update_type is None:
+                elif update_type == 'CREATE' or update_type is None:
                     self.add_domain(fp, glb.cname, glb.algorithm)
                 self.add_snapshot(fp, glb)
 
-        fp.write("OVER\n")
-        fp.flush()
+        self.finish_message(fp)
         while True:
             line = fp.readline()
             ret += line
             if line == "OVER\n":
                 break
+        fp.close()
+        s.close()
         print glbs
         return ret
 
@@ -88,6 +93,10 @@ class WorkerProcess():
             nlist.append('%s-%s-%s-%s' % (n.ip_type.split('IPV')[1], 30, n.ip_address,
                                           n.weight))
         fp.write("SNAPSHOT %s %s\n" % (glb.cname, ' '.join(nlist)))
+
+    def finish_message(self, fp):
+        fp.write("OVER\n")
+        fp.flush()
 
     def update_poll_time(self, lpt):
         self.last_poll_time = Value(c_char_p, lpt)
