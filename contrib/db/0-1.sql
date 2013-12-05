@@ -55,7 +55,7 @@ CREATE TABLE `glb` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `account_id` int(11) NOT NULL,
     `name` varchar(128) DEFAULT NULL,
-    `cname` varchar(128) DEFAULT NULL,
+    `fqdn` varchar(128) DEFAULT NULL,
     `algorithm` varchar(32) DEFAULT NULL,
     `status` varchar(32) DEFAULT NULL,
     `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,

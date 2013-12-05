@@ -56,7 +56,7 @@ class Mappings(object):
     GLB_FIELDS = {
     'id': fields.String,
     'name': fields.String,
-    'cname': fields.String,
+    'fqdn': fields.String,
     'create_time': fields.String,
     'update_time': fields.String,
     'algorithm': fields.String,

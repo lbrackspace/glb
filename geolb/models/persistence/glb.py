@@ -15,7 +15,7 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
     id_ = Column('id', Integer, primary_key=True)
     account_id = Column(Integer(32))
     name = Column(String(128))
-    cname = Column(String(128))
+    fqdn = Column(String(128))
     algorithm = Column(String(32))
     status = Column(String(32))
     update_type = Column(String(32))
@@ -25,12 +25,12 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
     nodes = relationship('NodeModel', backref='glb', lazy='dynamic',
                          cascade="all,delete")
 
-    def __init__(self, account_id=None, name=None, cname=None, status=None,
+    def __init__(self, account_id=None, name=None, fqdn=None, status=None,
                  update_type=None, dc_stats=[], algorithm=None,
                  create_time=None, update_time=None, nodes=[]):
         self.account_id = account_id
         self.name = name
-        self.cname = cname
+        self.fqdn = fqdn
         self.algorithm = algorithm
         self.status = status
         self.update_type = update_type
@@ -52,7 +52,7 @@ class GlobalLoadbalancerModel(base.Base, base.BaseModel):
         nodes_dict = [item.to_dict() for item in self.nodes
                       if item is not None]
 
-        glb_dict = {'id': self.id_, 'name': self.name, 'cname': self.cname,
+        glb_dict = {'id': self.id_, 'name': self.name, 'fqdn': self.fqdn,
                     'algorithm': self.algorithm,
                     'status': self.status,
                     'update_type': self.update_type,

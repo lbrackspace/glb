@@ -14,7 +14,7 @@
             <xs:attribute type="xs:int" name="id"/>
             <xs:attribute type="xs:int" name="account_id"/>
             <xs:attribute type="xs:string" name="name" use="required"/>
-            <xs:attribute type="xs:string" name="cname"/>
+            <xs:attribute type="xs:string" name="fqdn"/>
             <xs:attribute type="statusEnum" name="status"/>
             <xs:attribute type="algorithmEnum" name="algorithm" use="required"/>
         </xs:complexType>

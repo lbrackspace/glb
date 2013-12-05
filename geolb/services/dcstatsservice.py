@@ -32,6 +32,7 @@ class DCStatsService(BaseService):
                 g_id = s.get('glb_id')
                 location = s.get('location')
                 response = s.get('response')
+                status = s.get('status')
 
                 #glb operations currently ignores account_id, should have an
                 # 'admin' get by id and other admin type calls
@@ -46,17 +47,16 @@ class DCStatsService(BaseService):
                 active =[]
                 for ds in g.dc_stats:
                     #:P
-                    if 'ERROR' in ds.status:
+                    if 'ERROR' in status:
                         error.append(ds)
-                    if 'OFFLINE' in ds.status:
+                    if 'OFFLINE' in status:
                         offline.append(ds)
-                    if 'ONLINE' in ds.status:
+                    if 'ONLINE' in status:
                         active.append(ds)
 
-                    if location in ds.location:
-                        ds.location = s.get('location')
-                        ds.status = s.get('status')
-                        ds.response = s.get('response')
+                    if location in location:
+                        ds.status = status
+                        ds.response = response
 
                         #should probably do this elsewhere,
                         # get data elsehow/differently,

@@ -46,7 +46,7 @@
 {
     "glb": {
         "algorithm": "RANDOM",
-        "cname": "39.glbaas.rackspace.net",
+        "fqdn": "39.glbaas.rackspace.net",
         "id": 39,
         "name": "test33",
         "nodes": [
@@ -75,7 +75,7 @@
 {
     "glb": {
         "algorithm": "RANDOM",
-        "cname": "39.glbaas.rackspace.net",
+        "fqdn": "39.glbaas.rackspace.net",
         "id": 39,
         "name": "test33",
         "nodes": [

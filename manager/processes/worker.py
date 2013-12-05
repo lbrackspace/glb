@@ -60,10 +60,10 @@ class WorkerProcess():
             update_type = glb.update_type
             if update_type != 'NONE':
                 if update_type == 'FULL':
-                    self.del_domain(fp, glb.cname)
-                    self.add_domain(fp, glb.cname, glb.algorithm)
+                    self.del_domain(fp, glb.fqdn)
+                    self.add_domain(fp, glb.fqdn, glb.algorithm)
                 if update_type == 'CREATE' or update_type is None:
-                    self.add_domain(fp, glb.cname, glb.algorithm)
+                    self.add_domain(fp, glb.fqdn, glb.algorithm)
                 self.add_snapshot(fp, glb)
 
         fp.write("OVER\n")
@@ -76,18 +76,18 @@ class WorkerProcess():
         print glbs
         return ret
 
-    def add_domain(self, fp, cname, algo):
-        fp.write("ADD_DOMAIN %s %s\n" % (cname, algo))
+    def add_domain(self, fp, fqdn, algo):
+        fp.write("ADD_DOMAIN %s %s\n" % (fqdn, algo))
 
-    def del_domain(self, fp, cname):
-        fp.write("DEL_DOMAIN %s\n" % (cname))
+    def del_domain(self, fp, fqdn):
+        fp.write("DEL_DOMAIN %s\n" % (fqdn))
 
     def add_snapshot(self, fp, glb):
         nlist = []
         for n in glb.nodes:
             nlist.append('%s-%s-%s-%s' % (n.ip_type.split('IPV')[1], 30, n.ip_address,
                                           n.weight))
-        fp.write("SNAPSHOT %s %s\n" % (glb.cname, ' '.join(nlist)))
+        fp.write("SNAPSHOT %s %s\n" % (glb.fqdn, ' '.join(nlist)))
 
     def update_poll_time(self, lpt):
         self.last_poll_time = Value(c_char_p, lpt)
