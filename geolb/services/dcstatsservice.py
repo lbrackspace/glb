@@ -46,15 +46,14 @@ class DCStatsService(BaseService):
                         #should probably do this elsewhere,
                         # get data elsehow/differently,
                         # also need to check for errors etc..
-                        os = self.dcstatspersistence.get_online_dcstats(1, g_id)
-                        es = self.dcstatspersistence.get_error_dcstats(1, g_id)
-                        if len(os) == len(glb.dc_stats):
-                            g.status = 'ACTIVE'
-                        else:
-                            if es:
-                                g.status = 'ERROR'
 
-                        self.glbpersistence.gp.update(1, g_id, g)
+                if 'ERROR' in g.dc_stats:
+                    g.status = 'ERROR'
+                else:
+                    if not 'OFFLINE' in g.dc_stats:
+                        g.status = 'ACTIVE'
+
+                self.glbpersistence.gp.update(1, g_id, g)
             #What to return?
         return True
 

@@ -13,6 +13,7 @@ from manager.processes.responder import ResponderProcess
 
 filename = 'config.cfg'
 
+
 class Manager():
     def __init__(self):
         ### CONFIGURATION ###
@@ -61,25 +62,26 @@ class Manager():
             self.location = config.get('manager', 'location')
         except:
             self.location = "DEFAULT"
-        self.api_node = { 'host': config.get('manager', 'api_node'),
-                          'auth': config.get('manager', 'api_auth'),
-                          'path': config.get('manager', 'api_bulk') }
+        self.api_node = {'host': config.get('manager', 'api_node'),
+                         'auth': config.get('manager', 'api_auth'),
+                         'path': config.get('manager', 'api_bulk')}
 
         self.response_queue = Queue()
         self.RUN = Value(c_bool, True)
 
         ### PROCESSES ###
         self.heartbeat = Process(target=self.start_heartbeat,
-                            args=(self.port, self.other_servers, self.priority, 
-                                self.tick_time, self.last_poll_time, self.RUN))
-        self.worker =    Process(target=self.start_worker, 
-                            args=(self.priority, self.sessionmaker,
-                                self.response_queue, self.tick_time, 
-                                self.last_poll_time, self.config, self.RUN))
-        self.responder = Process(target=self.start_responder, 
-                            args=(self.priority,
-                                self.response_queue, self.location,
-                                self.api_node, self.tick_time, self.RUN))
+                                 args=(
+                                     self.port, self.other_servers, self.priority,
+                                     self.tick_time, self.last_poll_time, self.RUN))
+        self.worker = Process(target=self.start_worker,
+                              args=(self.priority, self.sessionmaker,
+                                    self.response_queue, self.tick_time,
+                                    self.last_poll_time, self.config, self.RUN))
+        self.responder = Process(target=self.start_responder,
+                                 args=(self.priority,
+                                       self.response_queue, self.location,
+                                       self.api_node, self.tick_time, self.RUN))
 
 
     def start_working(self):
@@ -118,9 +120,10 @@ class Manager():
                                last_poll_time, config, RUN)
         worker.run()
 
-    def start_responder(self, priority, response_queue, location, api_node, tick, RUN):
+    def start_responder(self, priority, response_queue, location, api_node,
+                        tick, RUN):
         responder = ResponderProcess(priority, response_queue,
-                        location, api_node, tick, RUN)
+                                     location, api_node, tick, RUN)
         responder.run()
 
     ### Testing DB ###

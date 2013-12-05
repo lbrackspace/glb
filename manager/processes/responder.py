@@ -29,8 +29,9 @@ class ResponderProcess():
             try:
                 qi = self.response_queue.get()
                 self.process_responses(qi)
-            except:
+            except Exception as e:
                 #debug and error handling ...
+                print e
                 print "Something went wrong with the queue: ", qi if 'qi' in locals() else "BAD_QUEUE_GET"
 
             print "=== Responder Process Tick - STOP ==="
@@ -54,7 +55,7 @@ class ResponderProcess():
                 #Need to handle error and 'response'
 
         api_url = ''.join((self.api_node['host'], self.api_node['path']))
-        headers = {'X-Auth-Token': self.api_node['auth'] }
+        headers = {'X-Auth-Token': self.api_node['auth']}
         print "%s -- %s -- %s" % (api_url, headers, json.dumps(dcstats))
         r = requests.put(api_url, data=json.dumps(dcstats), headers=headers)
         r.raise_for_status()

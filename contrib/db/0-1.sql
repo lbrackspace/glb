@@ -175,6 +175,7 @@ INSERT INTO `enum_dc_location` VALUES('ORD', 'ORD Region');
 INSERT INTO `enum_dc_location` VALUES('HKG', 'HKG Region');
 INSERT INTO `enum_dc_location` VALUES('SYD', 'SYD Region');
 INSERT INTO `enum_dc_location` VALUES('IAD', 'IAD Region');
+INSERT INTO `enum_dc_location` VALUES('DEFAULT', 'DEFAULT Region');
 
 INSERT INTO `enum_node_ip_type` VALUES('IPV4', 'IPV4');
 INSERT INTO `enum_node_ip_type` VALUES('IPV6', 'IPV6');

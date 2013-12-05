@@ -18,7 +18,7 @@ class HeartbeatProcess():
         p = subprocess.Popen('hostname', stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
         hostname, errors = p.communicate()
-        self.server = SimpleServer((hostname.strip(), self.port),
+        self.server = SimpleServer(('', self.port),
                                    HeartbeatRequestHandler, self.priority,
                                    self.others, self.last_poll)
         if len(self.others) == 0:

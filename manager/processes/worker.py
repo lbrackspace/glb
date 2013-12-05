@@ -58,14 +58,15 @@ class WorkerProcess():
         ret = ""
         for glb in glbs:
             update_type = glb.update_type
-            if update_type is not 'NONE':
-                if update_type is 'FULL':
+            t = ''
+            if update_type != 'NONE':
+                if update_type == 'FULL':
                     self.del_domain(fp, glb.cname)
-                if update_type is 'CREATE':
+                if update_type == 'CREATE' or update_type is None:
                     self.add_domain(fp, glb.cname, glb.algorithm)
                 self.add_snapshot(fp, glb)
 
-        fp.write("\nOVER\n")
+        fp.write("OVER\n")
         fp.flush()
         while True:
             line = fp.readline()
@@ -84,7 +85,7 @@ class WorkerProcess():
     def add_snapshot(self, fp, glb):
         nlist = []
         for n in glb.nodes:
-            nlist.append('%s-%s-%s-%s' % (n.ip_type, n.ttl, n.ip_address,
+            nlist.append('%s-%s-%s-%s' % (n.ip_type.split('IPV')[1], 30, n.ip_address,
                                           n.weight))
         fp.write("SNAPSHOT %s %s\n" % (glb.cname, ' '.join(nlist)))
 
