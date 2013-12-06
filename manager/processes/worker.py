@@ -2,6 +2,7 @@ import time
 import signal
 import socket
 import json
+import traceback
 
 from multiprocessing import Value
 from ctypes import c_bool, c_char_p
@@ -46,8 +47,11 @@ class WorkerProcess():
                 servers = json.loads(self.pdns_servers.value)
                 for server in servers:
                     try:
-                        responses[server] = self.send_data_pdns(glbs, server)
+                        sdr = self.send_data_pdns(glbs, server)
+                        if len(sdr) > 0:
+                            responses[server] = sdr
                     except:
+                        traceback.print_exc()
                         responses[server] = "" #Need to decide what to do here
                 print "Got responses from %i pDNS servers." % (len(responses),)
                 if len(responses) > 0:
@@ -70,7 +74,7 @@ class WorkerProcess():
                     self.del_domain(fp, glb.fqdn)
                     self.add_domain(fp, glb.fqdn, glb.algorithm)
                 elif update_type == 'CREATE' or update_type is None:
-                    self.add_domain(fp, glb.cname, glb.algorithm)
+                    self.add_domain(fp, glb.fqdn, glb.algorithm)
                 self.add_snapshot(fp, glb)
         print glbs
 
@@ -96,12 +100,12 @@ class WorkerProcess():
         fp.flush()
         while True:
             line = fp.readline()
-            ret += line
             if line == "OVER\n":
                 break
+            ret += line
         fp.close()
         s.close()
-        return ret
+        return ret.strip('\n')
 
     def update_poll_time(self, lpt):
         self.last_poll_time = Value(c_char_p, lpt)

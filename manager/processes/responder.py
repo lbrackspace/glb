@@ -50,7 +50,6 @@ class ResponderProcess():
     def process_responses(self, responses):
         #have this handled in responder
         ## Should parse glbs list into list of string that follows protocol
-        dc_stats = []
         responses = self.aggregate_responses(responses)
         responses = responses.split('\n')
         dcstats = { "dc_stats": [] }
@@ -62,7 +61,7 @@ class ResponderProcess():
             if "type" in resp and resp['type'] == "SNAPSHOT":
                 stat['status'] = "ONLINE" if resp['status'] == "PASSED" else \
                     "ERROR"
-                stat['glb_id'] = resp['fqdn'][4:resp.find(".")]
+                stat['glb_id'] = resp['fqdn'][4:resp['fqdn'].find(".")]
                 stat['location'] = self.location
 
                 if resp['status'] == "FAILED":
