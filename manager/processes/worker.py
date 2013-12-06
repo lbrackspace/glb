@@ -43,12 +43,15 @@ class WorkerProcess():
                 print "== Worker Process: Processing %d glbs ==" % len(glbs)
                 # Send the data to pDNS
                 responses = {}
-                for server in json.loads(self.pdns_servers.value):
+                servers = json.loads(self.pdns_servers.value)
+                for server in servers:
                     try:
                         responses[server] = self.send_data_pdns(glbs, server)
                     except:
                         responses[server] = "" #Need to decide what to do here
-                self.response_queue.put(responses)
+                print "Got responses from %i pDNS servers." % (len(responses),)
+                if len(responses) > 0:
+                    self.response_queue.put(responses)
 
                 self.update_poll_time(glbs[0].update_time.__str__())
             else:
