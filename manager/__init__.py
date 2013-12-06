@@ -1,9 +1,10 @@
 import ConfigParser
+import json
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from multiprocessing import Process, Queue, current_process, Value
+from multiprocessing import Process, Queue, Array, Value
 from ctypes import c_bool, c_char_p
 
 from manager.models.glb import GlobalLoadbalancerModel
@@ -65,6 +66,15 @@ class Manager():
         self.api_node = {'host': config.get('manager', 'api_node'),
                          'auth': config.get('manager', 'api_auth'),
                          'path': config.get('manager', 'api_bulk')}
+        try:
+            self.pdns_port = config.getint('manager', 'pdns_port')
+        except:
+            self.pdns_port = 8888
+        try:
+            pdns_servers = config.get('manager', 'pdns_servers').split(',')
+        except:
+            pdns_servers = []
+        self.pdns_servers = Value(c_char_p, json.dumps(pdns_servers))
 
         self.response_queue = Queue()
         self.RUN = Value(c_bool, True)
@@ -72,10 +82,12 @@ class Manager():
         ### PROCESSES ###
         self.heartbeat = Process(target=self.start_heartbeat,
                                  args=(
-                                     self.port, self.other_servers, self.priority,
+                                     self.port, self.other_servers,
+                                     self.pdns_servers, self.priority,
                                      self.tick_time, self.last_poll_time, self.RUN))
         self.worker = Process(target=self.start_worker,
                               args=(self.priority, self.sessionmaker,
+                                    self.pdns_servers, self.pdns_port,
                                     self.response_queue, self.tick_time,
                                     self.last_poll_time, self.config, self.RUN))
         self.responder = Process(target=self.start_responder,
@@ -105,19 +117,19 @@ class Manager():
     def stop_working(self):
         self.RUN.value = False
 
-    def start_heartbeat(self, port, other_servers, priority, tick, last_poll,
-                        RUN):
-        heartbeat = HeartbeatProcess(port, other_servers, priority, tick,
-                                     last_poll, RUN)
+    def start_heartbeat(self, port, other_servers, pdns_servers, priority,
+                        tick, last_poll, RUN):
+        heartbeat = HeartbeatProcess(port, other_servers, pdns_servers,
+                                     priority, tick, last_poll, RUN)
         try:
             heartbeat.run()
         except:
             heartbeat.stop_heartbeat()
 
-    def start_worker(self, priority, sessionmaker, response_queue, tick,
-                     last_poll_time, config, RUN):
-        worker = WorkerProcess(priority, sessionmaker, response_queue, tick,
-                               last_poll_time, config, RUN)
+    def start_worker(self, priority, sessionmaker, pdns_servers, pdns_port,
+                     response_queue, tick, last_poll_time, config, RUN):
+        worker = WorkerProcess(priority, sessionmaker, pdns_servers, pdns_port,
+                            response_queue, tick, last_poll_time, config, RUN)
         worker.run()
 
     def start_responder(self, priority, response_queue, location, api_node,

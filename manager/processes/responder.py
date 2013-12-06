@@ -2,9 +2,8 @@ import time
 import signal
 import requests
 import json
-
-from manager.models.dcstats import DCStatusModel as DCStats
-
+import traceback
+import re
 
 class ResponderProcess():
     def __init__(self, priority, response_queue, location, api_node, tick, RUN):
@@ -29,28 +28,56 @@ class ResponderProcess():
             try:
                 qi = self.response_queue.get()
                 self.process_responses(qi)
-            except Exception as e:
+            except requests.HTTPError as httpe:
+                print "API Returned error code %i -- message: %r" % \
+                        (httpe.response.status_code, httpe.message)
+            except requests.ConnectionError:
+                self.response_queue.add(qi)
+                time.sleep(1)
+            except Exception:
                 #debug and error handling ...
-                print e
-                print "Something went wrong with the queue: ", qi if 'qi' in locals() else "BAD_QUEUE_GET"
+                traceback.print_exc()
+                print "Something went wrong with the queue: ", \
+                        qi if 'qi' in locals() else "BAD_QUEUE_GET"
 
             print "=== Responder Process Tick - STOP ==="
+
+    def aggregate_responses(self, responses):
+        #Some sort of decision has to be made to aggregate this data
+        #Right now, I'll just return the first server's response
+        return responses.values()[0]
 
     def process_responses(self, responses):
         #have this handled in responder
         ## Should parse glbs list into list of string that follows protocol
         dc_stats = []
+        responses = self.aggregate_responses(responses)
         responses = responses.split('\n')
         dcstats = { "dc_stats": [] }
         for resp in responses:
             print resp
-            #build a factory of some sorts to clean up the parsing
+            resp = json.loads(resp)
             stat = {}
 
-            if resp.startswith("SNAPSHOT"):
-                stat['status'] = "ONLINE" if "SNAPSHOT PASSED:" in resp else "OFFLINE"
-                stat['glb_id'] = resp[resp.find("glb_")+4:resp.find(".")]
+            if "type" in resp and resp['type'] == "SNAPSHOT":
+                stat['status'] = "ONLINE" if resp['status'] == "PASSED" else \
+                    "ERROR"
+                stat['glb_id'] = resp['fqdn'][4:resp.find(".")]
                 stat['location'] = self.location
+
+                if resp['status'] == "FAILED":
+                    messages = []
+                    pattern = "r-([46])-([0-9]*)-(.*?)-([0-9]*)-(.*)"
+                    for vname in resp['vnames']:
+                        match = re.match(pattern, vname)
+                        #iptype = match.group(1)
+                        #ttl = match.group(2)
+                        ip = match.group(3)
+                        #weight = match.group(4)
+                        message = match.group(5)
+                        messages.append("%s -- %r" % (ip, message))
+                    stat['response'] = ' / '.join(messages)
+
                 dcstats["dc_stats"].append(stat)
                 #Need to handle error and 'response'
 

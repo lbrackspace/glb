@@ -8,16 +8,14 @@ import subprocess
 import traceback
 
 class HeartbeatProcess():
-    def __init__(self, port, others, priority, tick, last_poll, RUN):
+    def __init__(self, port, others, pdns, priority, tick, last_poll, RUN):
         self.port = port
         self.priority = priority
         self.tick_time = tick
         self.last_poll = last_poll
         self.RUN = RUN
         self.others = others
-        p = subprocess.Popen('hostname', stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        hostname, errors = p.communicate()
+        self.pdns = pdns
         self.server = SimpleServer(('', self.port),
                                    HeartbeatRequestHandler, self.priority,
                                    self.others, self.last_poll)
@@ -167,15 +165,15 @@ def send_packet(socket, priority, poll, others):
         #print socket.getpeername(), others[o]
         others_list[others[o]['ip']] = others[o]['priority']
     packet = {  'ip': socket.getsockname()[0],
-                'priority': priority.value, 
+                'priority': priority.value,
                 'last_poll': poll.value,
                 'known_others': others_list }
-    socket.send(json.dumps(packet)+"EOT")
+    socket.sendall(json.dumps(packet)+"EOT")
 
 def recv_packet(socket):
     message = ""
     while 1:
-        data = socket.recv(1024)
+        data = socket.recv(2048)
         message += data
         if message.strip().endswith('EOT'):
             jm = json.loads(message.rstrip('EOT'))
