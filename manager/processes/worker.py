@@ -39,7 +39,8 @@ class WorkerProcess():
             # Do work here (worry about paging the SQL query later)
             glbs = session.query(GLB). \
                 filter(GLB.update_time > self.last_poll_time.value). \
-                order_by(GLB.update_time.desc()).all()
+                filter(GLB.update_type != "NONE").order_by(GLB.update_time. \
+                desc()).all()
             if glbs:
                 print "== Worker Process: Processing %d glbs ==" % len(glbs)
                 # Send the data to pDNS
@@ -47,8 +48,8 @@ class WorkerProcess():
                 servers = json.loads(self.pdns_servers.value)
                 for server in servers:
                     try:
-                        sdr = self.send_data_pdns(glbs, server)
-                        if len(sdr) > 0:
+                        sdr = self.send_data_to_pdns(glbs, server)
+                        if sdr:
                             responses[server] = sdr
                     except:
                         traceback.print_exc()
@@ -63,58 +64,52 @@ class WorkerProcess():
             print "=== Worker Process Tick - STOP ==="
         session.close()
 
-    def send_data_pdns(self, glbs, server):
-        s = socket.create_connection((server, self.pdns_port))
-        fp = s.makefile("rw")
+    def send_data_to_pdns(self, glbs, server):
+        command = ""
+
         for glb in glbs:
-            try:
-                update_type = glb.update_type
-                if update_type != 'NONE':
-                    if update_type == 'FULL':
-                        self.del_domain(fp, glb.fqdn)
-                        self.add_domain(fp, glb.fqdn, glb.algorithm)
-                    elif update_type == 'CREATE' or update_type is None:
-                        self.add_domain(fp, glb.fqdn, glb.algorithm)
-                    self.add_snapshot(fp, glb)
-            except:
-                ##Handle socket/file errors, retry?
-                traceback.print_exc()
-            print glbs
+            update_type = glb.update_type
+            if update_type != 'NONE':
+                if update_type == 'FULL':
+                    command += self.del_domain(glb.fqdn)
+                    command += self.add_domain(glb.fqdn, glb.algorithm)
+                elif update_type == 'CREATE' or update_type is None:
+                    command += self.add_domain(glb.fqdn, glb.algorithm)
+                command += self.add_snapshot(glb)
+        print "pDNS %s Processing GLBS: " % server, glbs
+        print "pDNS %s Command: " % server, command.strip("\n")
 
-        ret = self.handle_data_pdns(fp, s)
-        return ret
+        if len(command) > 0: # Possibly needs a try/catch
+            command += "OVER\n"
+            pDNS_socket = socket.create_connection((server, self.pdns_port))
+            pDNS_socketFile = pDNS_socket.makefile("rw")
+            pDNS_socketFile.write(command)
+            pDNS_socketFile.flush()
+            response_data = self.process_response(pDNS_socketFile)
+            pDNS_socketFile.close()
+            pDNS_socket.close()
+            return response_data
 
-    def add_domain(self, fp, fqdn, algo):
-        fp.write("ADD_DOMAIN %s %s\n" % (fqdn, algo))
+    def add_domain(self, fqdn, algo):
+        return "ADD_DOMAIN %s %s\n" % (fqdn, algo)
 
-    def add_snapshot(self, fp, glb):
-        nlist = []
+    def del_domain(self, fqdn):
+        return "DEL_DOMAIN %s\n" % (fqdn)
+
+    def add_snapshot(self, glb):
+        node_list = []
         for n in glb.nodes:
-            nlist.append('%s-%s-%s-%s' % (n.ip_type.split('IPV')[1],
-                                          30, #Where is TTL coming from?
-                                          n.ip_address,
+            node_list.append('%s-%s-%s-%s' % (n.ip_type.split('IPV')[1], 30, n.ip_address,
                                           n.weight))
-        fp.write("SNAPSHOT %s %s\n" % (glb.fqdn,
-                                       ' '.join(nlist)))
+        return "SNAPSHOT %s %s\n" % (glb.fqdn, ' '.join(node_list))
 
-    def del_domain(self, fp, fqdn):
-        fp.write("DEL_DOMAIN %s\n" % (fqdn))
-
-    def handle_data_pdns(self, fp, s):
+    def process_response(self, pDNS_socketFile):
         ret = ""
-        try:
-            fp.write("OVER\n")
-            fp.flush()
-            while True:
-                line = fp.readline()
-                if line == "OVER\n":
-                    break
-                ret += line
-            fp.close()
-            s.close()
-        except:
-            ##Handle socket/file errors, retry?
-            traceback.print_exc()
+        while True: # Possibly needs a try/catch
+            line = pDNS_socketFile.readline()
+            if line == "OVER\n":
+                break
+            ret += line
         return ret.strip('\n')
 
     def update_poll_time(self, lpt):
