@@ -34,9 +34,8 @@ class NodeResource(BaseResource):
     def put(self, account_id, glb_id, node_id):
         json_body = self.get_request_body(request)
         #Object validation, error handling etc...
-        node_json = json_body.get('glb')
         node = nodeservice.NodeService() \
-            .update(account_id, glb_id, node_id, node_json)
+            .update(account_id, glb_id, node_id, json_body)
         return jsonify({"node": node.to_dict()})
 
     def delete(self, account_id, glb_id, node_id):

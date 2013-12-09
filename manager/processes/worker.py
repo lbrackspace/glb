@@ -66,22 +66,22 @@ class WorkerProcess():
     def send_data_pdns(self, glbs, server):
         s = socket.create_connection((server, self.pdns_port))
         fp = s.makefile("rw")
-        try:
-            for glb in glbs:
+        for glb in glbs:
+            try:
                 update_type = glb.update_type
                 if update_type != 'NONE':
                     if update_type == 'FULL':
                         self.del_domain(fp, glb.fqdn)
                         self.add_domain(fp, glb.fqdn, glb.algorithm)
                     elif update_type == 'CREATE' or update_type is None:
-                        self.add_domain(fp, glb.cname, glb.algorithm)
+                        self.add_domain(fp, glb.fqdn, glb.algorithm)
                     self.add_snapshot(fp, glb)
+            except:
+                ##Handle socket/file errors, retry?
+                traceback.print_exc()
             print glbs
 
-            ret = self.handle_pdns_resp(fp, s)
-        except:
-            ##Handle socket/file errors, retry?
-            traceback.print_exc()
+        ret = self.handle_data_pdns(fp, s)
         return ret
 
     def add_domain(self, fp, fqdn, algo):
@@ -90,24 +90,31 @@ class WorkerProcess():
     def add_snapshot(self, fp, glb):
         nlist = []
         for n in glb.nodes:
-            nlist.append('%s-%s-%s-%s' % (n.ip_type.split('IPV')[1], 30, n.ip_address,
+            nlist.append('%s-%s-%s-%s' % (n.ip_type.split('IPV')[1],
+                                          30, #Where is TTL coming from?
+                                          n.ip_address,
                                           n.weight))
-        fp.write("SNAPSHOT %s %s\n" % (glb.fqdn, ' '.join(nlist)))
+        fp.write("SNAPSHOT %s %s\n" % (glb.fqdn,
+                                       ' '.join(nlist)))
 
     def del_domain(self, fp, fqdn):
         fp.write("DEL_DOMAIN %s\n" % (fqdn))
 
-    def handle_pdns_resp(self, fp, s):
+    def handle_data_pdns(self, fp, s):
         ret = ""
-        fp.write("OVER\n")
-        fp.flush()
-        while True:
-            line = fp.readline()
-            if line == "OVER\n":
-                break
-            ret += line
-        fp.close()
-        s.close()
+        try:
+            fp.write("OVER\n")
+            fp.flush()
+            while True:
+                line = fp.readline()
+                if line == "OVER\n":
+                    break
+                ret += line
+            fp.close()
+            s.close()
+        except:
+            ##Handle socket/file errors, retry?
+            traceback.print_exc()
         return ret.strip('\n')
 
     def update_poll_time(self, lpt):

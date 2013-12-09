@@ -59,6 +59,9 @@ class DCStatsService(BaseService):
                         ds.status = status
                         ds.response = response
 
+                #If anything fails a response is saved to dc_stats and glb is
+                # put in error state. We can also save alerts and allow quorum
+                # to determine a glbs status.
                 if error:
                     g.status = 'ERROR'
                 else:

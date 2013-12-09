@@ -35,7 +35,7 @@ class RegionPersistence(BaseService):
             base.db.session.delete(n)
             return n
         except:
-            print "Delete node %d failed..." % region_id
+            print "Delete region %d failed..." % region_id
             raise LookupError
 
 

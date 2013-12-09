@@ -22,7 +22,7 @@ class MonitorPersistence(BaseService):
             base.db.session.commit()
             return m
         except:
-            print "Delete glb %d failed..." % glb_id
+            print "Delete monitor %d failed..." % glb_id
             raise LookupError
 
 
