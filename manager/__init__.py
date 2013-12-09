@@ -72,6 +72,8 @@ class Manager():
             self.pdns_port = 8888
         try:
             pdns_servers = config.get('manager', 'pdns_servers').split(',')
+            if len(pdns_servers) == 1 and len(pdns_servers[0]) == 0:
+                pdns_servers = []
         except:
             pdns_servers = []
         self.pdns_servers = Value(c_char_p, json.dumps(pdns_servers))

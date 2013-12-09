@@ -24,6 +24,7 @@ for num in range(0, args.count):
         "nodes": [
             { 
                 "ip_address": "10.1.1.1",
+                "ip_type": "IPV4",
                 "type": "PASSIVE",
                 "monitor": { 
                     "interval": "30",

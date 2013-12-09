@@ -44,12 +44,18 @@ class WorkerProcess():
                 print "== Worker Process: Processing %d glbs ==" % len(glbs)
                 # Send the data to pDNS
                 responses = {}
-                for server in json.loads(self.pdns_servers.value):
+                servers = json.loads(self.pdns_servers.value)
+                for server in servers:
                     try:
-                        responses[server] = self.send_data_pdns(glbs, server)
+                        sdr = self.send_data_pdns(glbs, server)
+                        if len(sdr) > 0:
+                            responses[server] = sdr
                     except:
+                        traceback.print_exc()
                         responses[server] = "" #Need to decide what to do here
-                self.response_queue.put(responses)
+                print "Got responses from %i pDNS servers." % (len(responses),)
+                if len(responses) > 0:
+                    self.response_queue.put(responses)
 
                 self.update_poll_time(glbs[0].update_time.__str__())
             else:
@@ -72,7 +78,7 @@ class WorkerProcess():
                     self.add_snapshot(fp, glb)
             print glbs
 
-            ret = self.handle_pdns_data(fp, s)
+            ret = self.handle_pdns_resp(fp, s)
         except:
             ##Handle socket/file errors, retry?
             traceback.print_exc()
@@ -91,18 +97,18 @@ class WorkerProcess():
     def del_domain(self, fp, fqdn):
         fp.write("DEL_DOMAIN %s\n" % (fqdn))
 
-    def handle_pdns_data(self, fp, s):
+    def handle_pdns_resp(self, fp, s):
         ret = ""
         fp.write("OVER\n")
         fp.flush()
         while True:
             line = fp.readline()
-            ret += line
             if line == "OVER\n":
                 break
+            ret += line
         fp.close()
         s.close()
-        return ret
+        return ret.strip('\n')
 
     def update_poll_time(self, lpt):
         self.last_poll_time = Value(c_char_p, lpt)
