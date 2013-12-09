@@ -42,25 +42,22 @@ class DCStatsService(BaseService):
                 #cstat = self.dcstatspersistence.dsp.get(s.get('glb_id'),
                 #                                        s.get('location'))
 
+                #Should handle this else where and figure better way
+                # to determine dc status to base glb status off of
                 error = []
                 offline = []
-                active =[]
+                active = []
                 for ds in g.dc_stats:
-                    #:P
                     if 'ERROR' in status:
                         error.append(ds)
-                    if 'OFFLINE' in status:
+                    elif 'OFFLINE' in status:
                         offline.append(ds)
-                    if 'ONLINE' in status:
+                    elif 'ONLINE' in status:
                         active.append(ds)
 
                     if location in location:
                         ds.status = status
                         ds.response = response
-
-                        #should probably do this elsewhere,
-                        # get data elsehow/differently,
-                        # also need to check for errors etc..
 
                 if error:
                     g.status = 'ERROR'
@@ -69,7 +66,7 @@ class DCStatsService(BaseService):
                         g.status = 'ACTIVE'
 
                 self.glbpersistence.gp.update(1, g_id, g)
-            #What to return?
+        #What to return?
         return True
 
 

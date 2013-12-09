@@ -2,6 +2,7 @@ import time
 import signal
 import socket
 import json
+import traceback
 
 from multiprocessing import Value
 from ctypes import c_bool, c_char_p
@@ -59,26 +60,26 @@ class WorkerProcess():
     def send_data_pdns(self, glbs, server):
         s = socket.create_connection((server, self.pdns_port))
         fp = s.makefile("rw")
+        try:
+            for glb in glbs:
+                update_type = glb.update_type
+                if update_type != 'NONE':
+                    if update_type == 'FULL':
+                        self.del_domain(fp, glb.fqdn)
+                        self.add_domain(fp, glb.fqdn, glb.algorithm)
+                    elif update_type == 'CREATE' or update_type is None:
+                        self.add_domain(fp, glb.cname, glb.algorithm)
+                    self.add_snapshot(fp, glb)
+            print glbs
 
-        for glb in glbs:
-            update_type = glb.update_type
-            if update_type != 'NONE':
-                if update_type == 'FULL':
-                    self.del_domain(fp, glb.fqdn)
-                    self.add_domain(fp, glb.fqdn, glb.algorithm)
-                elif update_type == 'CREATE' or update_type is None:
-                    self.add_domain(fp, glb.cname, glb.algorithm)
-                self.add_snapshot(fp, glb)
-        print glbs
-
-        ret = self.process_resp(fp, s)
+            ret = self.handle_pdns_data(fp, s)
+        except:
+            ##Handle socket/file errors, retry?
+            traceback.print_exc()
         return ret
 
     def add_domain(self, fp, fqdn, algo):
         fp.write("ADD_DOMAIN %s %s\n" % (fqdn, algo))
-
-    def del_domain(self, fp, fqdn):
-        fp.write("DEL_DOMAIN %s\n" % (fqdn))
 
     def add_snapshot(self, fp, glb):
         nlist = []
@@ -87,7 +88,10 @@ class WorkerProcess():
                                           n.weight))
         fp.write("SNAPSHOT %s %s\n" % (glb.fqdn, ' '.join(nlist)))
 
-    def process_resp(self, fp, s):
+    def del_domain(self, fp, fqdn):
+        fp.write("DEL_DOMAIN %s\n" % (fqdn))
+
+    def handle_pdns_data(self, fp, s):
         ret = ""
         fp.write("OVER\n")
         fp.flush()
