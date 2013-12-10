@@ -135,7 +135,8 @@ CREATE TABLE `enum_dc_location` (
 DROP TABLE IF EXISTS `node_region`;
 CREATE TABLE `node_region` (
     `node_id` int(11),
-    `region_id` int(11)
+    `region_id` int(11),
+    PRIMARY KEY (node_id, region_id)
 ) ENGINE=InnoDB;
 
 

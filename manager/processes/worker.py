@@ -67,7 +67,8 @@ class WorkerProcess():
     def send_data_to_pdns(self, glbs, server):
         command = ""
 
-        for glb in glbs:
+        for glb in glbs: # Possibly needs a try/catch within loop to allow
+        # processing to continue
             update_type = glb.update_type
             if update_type != 'NONE':
                 if update_type == 'FULL':
@@ -79,7 +80,7 @@ class WorkerProcess():
         print "pDNS %s Processing GLBS: " % server, glbs
         print "pDNS %s Command: " % server, command.strip("\n")
 
-        if len(command) > 0: # Possibly needs a try/catch
+        if command: # Possibly needs a try/catch
             command += "OVER\n"
             pDNS_socket = socket.create_connection((server, self.pdns_port))
             pDNS_socketFile = pDNS_socket.makefile("rw")
