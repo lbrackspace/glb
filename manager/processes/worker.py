@@ -54,8 +54,8 @@ class WorkerProcess():
                                             filter(GLB.status == "ACTIVE"). \
                                             all()
                                 sdr = self.send_data_to_pdns(all_glbs, server[
-                                    'ip'], new = True)
-                                server['mode'] == "INCREMENTAL"
+                                    'ip'], new=True)
+                                server['mode'] = "INCREMENTAL"
                             else:
                                 sdr = self.send_data_to_pdns(glbs, server['ip'])
                             if sdr:
