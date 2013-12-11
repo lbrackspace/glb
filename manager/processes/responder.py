@@ -52,7 +52,7 @@ class ResponderProcess():
         ## Should parse glbs list into list of string that follows protocol
         responses = self.aggregate_responses(responses)
         responses = responses.split('\n')
-        dcstats = { "dc_stats": [] }
+        dcstats = {"dc_stats": []}
         for resp in responses:
             print resp
             resp = json.loads(resp)

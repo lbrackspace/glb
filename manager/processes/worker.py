@@ -3,6 +3,7 @@ import signal
 import socket
 import json
 import traceback
+import datetime
 
 from multiprocessing import Value
 from ctypes import c_bool, c_char_p
@@ -51,11 +52,11 @@ class WorkerProcess():
                         try:
                             if server['mode'].upper() == "NEW":
                                 all_glbs = session.query(GLB). \
-                                            filter(GLB.status == "ACTIVE"). \
-                                            all()
+                                            filter(GLB.status == "ACTIVE").all()
                                 sdr = self.send_data_to_pdns(all_glbs, server[
                                     'ip'], new=True)
                                 server['mode'] = "INCREMENTAL"
+                                self.pdns_servers.value = json.dumps(servers)
                             else:
                                 sdr = self.send_data_to_pdns(glbs, server['ip'])
                             if sdr:
@@ -71,7 +72,9 @@ class WorkerProcess():
 
                 self.update_poll_time(glbs[0].update_time.__str__())
             else:
-                print "== Worker Process: No data to process, up-to-date! =="
+                print "== Worker Process: No data to process, up-to-date! " \
+                      "Polled at %s ==" % datetime.datetime.utcnow().\
+                    strftime("%Y-%m-%d %H:%M:%S")
             print "=== Worker Process Tick - STOP ==="
         session.close()
 
