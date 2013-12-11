@@ -64,9 +64,8 @@ class DCStatsService(BaseService):
                 # to determine a glbs status.
                 if error:
                     g.status = 'ERROR'
-                else:
-                    if not offline:
-                        g.status = 'ACTIVE'
+                elif active:
+                    g.status = 'ACTIVE' #For demo sake update if one dc is online
 
                 self.glbpersistence.gp.update(1, g_id, g)
         #What to return?
