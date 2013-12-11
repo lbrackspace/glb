@@ -71,10 +71,11 @@ class Manager():
         except:
             self.pdns_port = 8888
         try:
-            pdns_servers = config.get('manager', 'pdns_servers').split(',')
-            pdns_servers = map(lambda x: x.strip(), pdns_servers)
-            if len(pdns_servers) == 1 and len(pdns_servers[0]) == 0:
-                pdns_servers = []
+            pdns_servers_raw = config.get('manager', 'pdns_servers'). \
+                replace(" ", "").split(',')
+            pdns_servers = []
+            for server in pdns_servers_raw:
+                pdns_servers.append({"ip":server.strip(), "mode":"NEW"})
         except:
             pdns_servers = []
         self.pdns_servers = Value(c_char_p, json.dumps(pdns_servers))

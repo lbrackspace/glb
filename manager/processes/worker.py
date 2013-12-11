@@ -45,15 +45,26 @@ class WorkerProcess():
                 print "== Worker Process: Processing %d glbs ==" % len(glbs)
                 # Send the data to pDNS
                 responses = {}
-                servers = json.loads(self.pdns_servers.value)
-                for server in servers:
-                    try:
-                        sdr = self.send_data_to_pdns(glbs, server)
-                        if sdr:
-                            responses[server] = sdr
-                    except:
-                        traceback.print_exc()
-                        responses[server] = "" #Need to decide what to do here
+                with self.pdns_servers.get_lock():
+                    servers = json.loads(self.pdns_servers.value)
+                    for server in servers: #This may need to be threaded
+                        try:
+                            if server['mode'].upper() == "NEW":
+                                all_glbs = session.query(GLB). \
+                                            filter(GLB.status == "ACTIVE"). \
+                                            all()
+                                sdr = self.send_data_to_pdns(all_glbs, server[
+                                    'ip'], new = True)
+                                server['mode'] == "INCREMENTAL"
+                            else:
+                                sdr = self.send_data_to_pdns(glbs, server['ip'])
+                            if sdr:
+                                responses[server['ip']] = sdr
+                        except:
+                            #Need to decide what to do here
+                            traceback.print_exc()
+                            responses[server['ip']] = ""
+                    self.pdns_servers.value = json.dumps(servers)
                 print "Got responses from %i pDNS servers." % (len(responses),)
                 if len(responses) > 0:
                     self.response_queue.put(responses)
@@ -64,17 +75,17 @@ class WorkerProcess():
             print "=== Worker Process Tick - STOP ==="
         session.close()
 
-    def send_data_to_pdns(self, glbs, server):
+    def send_data_to_pdns(self, glbs, server, new = False):
         command = ""
 
         for glb in glbs: # Possibly needs a try/catch within loop to allow
         # processing to continue
             update_type = glb.update_type
-            if update_type != 'NONE':
-                if update_type == 'FULL':
-                    command += self.del_domain(glb.fqdn)
+            if update_type != 'NONE' or new:
+                if update_type == 'CREATE' or update_type is None or new:
                     command += self.add_domain(glb.fqdn, glb.algorithm)
-                elif update_type == 'CREATE' or update_type is None:
+                elif update_type == 'FULL':
+                    command += self.del_domain(glb.fqdn)
                     command += self.add_domain(glb.fqdn, glb.algorithm)
                 command += self.add_snapshot(glb)
         print "pDNS %s Processing GLBS: " % server, glbs

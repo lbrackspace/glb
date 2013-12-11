@@ -131,6 +131,16 @@ class HeartbeatRequestHandler(SocketServer.BaseRequestHandler):
 
     def handle(self):
         message = recv_packet(self.request)
+
+        if type in message and message['type'] == "":
+            mode = "NEW" if self.priority.value == "M" else "INCREMENTAL"
+            with self.server.pdns.get_lock():
+                pdns = json.loads(self.server.pdns.value)
+                pdns.append({"ip": self.request.getpeername()[0],
+                             "mode": mode })
+                self.server.pdns.value = json.dumps(pdns)
+            return
+
         if message['ip'] not in self.server.others:
             if message['priority'] == "M":
                 self.server.priority.value = "S"
