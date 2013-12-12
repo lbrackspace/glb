@@ -36,6 +36,7 @@ class Manager():
             self.tick_time = Value('i', config.getint('manager', 'tick_time'))
         except:
             self.tick_time = Value('i', 5)
+        print "Tick time: ", self.tick_time.value
         try:
             self.priority = Value('c', config.get('manager', 'priority', 0,
                                                   {'master': 'M', 'slave': 'S',

@@ -7,6 +7,7 @@ import datetime
 
 from multiprocessing import Value
 from ctypes import c_bool, c_char_p
+from sqlalchemy import or_
 
 from manager.models.glb import GlobalLoadbalancerModel as GLB
 from manager.models.dcstats import DCStatusModel as DCStats
@@ -34,49 +35,76 @@ class WorkerProcess():
 
     def do_work(self):
         time.sleep(self.tick_time.value)
-        session = self.sessionmaker()
         if self.priority.value == 'M':
+            session = self.sessionmaker()
             print "=== Worker Process Tick - START ==="
             # Do work here (worry about paging the SQL query later)
             glbs = session.query(GLB). \
                 filter(GLB.update_time > self.last_poll_time.value). \
                 filter(GLB.update_type != "NONE").order_by(GLB.update_time. \
                 desc()).all()
-            if glbs:
-                print "== Worker Process: Processing %d glbs ==" % len(glbs)
-                # Send the data to pDNS
-                responses = {}
-                with self.pdns_servers.get_lock():
+
+            new_servers, inc_servers = [], []
+            responses = {}
+            with self.pdns_servers.get_lock():
+                try:
                     servers = json.loads(self.pdns_servers.value)
-                    for server in servers: #This may need to be threaded
+                except:
+                    print "WTF"
+                    servers = []
+
+                for server in servers:
+                    if server['mode'].upper() == "NEW":
+                        new_servers.append(server)
+                    else:
+                        inc_servers.append(server)
+
+                #print "New pDNS Servers:", new_servers
+                #print "Incremental pDNS Servers:", inc_servers
+
+                if new_servers:
+                    print "== Worker Process: Processing new servers: %d  ==" \
+                          % len(new_servers)
+                    all_glbs = session.query(GLB). \
+                        filter(or_(GLB.status == "BUILD",
+                                   GLB.status == "ACTIVE")) \
+                        .all()
+                    for server in new_servers: #This may need to be threaded
                         try:
-                            if server['mode'].upper() == "NEW":
-                                all_glbs = session.query(GLB). \
-                                            filter(GLB.status == "ACTIVE").all()
-                                sdr = self.send_data_to_pdns(all_glbs, server[
-                                    'ip'], new=True)
-                                server['mode'] = "INCREMENTAL"
-                                self.pdns_servers.value = json.dumps(servers)
-                            else:
-                                sdr = self.send_data_to_pdns(glbs, server['ip'])
+                            sdr = self.send_data_to_pdns(all_glbs, server[
+                                'ip'], new=True)
                             if sdr:
                                 responses[server['ip']] = sdr
+                            server['mode'] = "INCREMENTAL"
                         except:
                             #Need to decide what to do here
                             traceback.print_exc()
                             responses[server['ip']] = ""
                     self.pdns_servers.value = json.dumps(servers)
-                print "Got responses from %i pDNS servers." % (len(responses),)
-                if len(responses) > 0:
-                    self.response_queue.put(responses)
 
-                self.update_poll_time(glbs[0].update_time.__str__())
+            if glbs:
+                print "== Worker Process: Processing %d glbs ==" % len(glbs)
+                # Send the data to pDNS
+                for server in inc_servers: #This may need to be threaded
+                    try:
+                        sdr = self.send_data_to_pdns(glbs, server['ip'])
+                        if sdr:
+                            responses[server['ip']] = sdr
+                    except:
+                        #Need to decide what to do here
+                        traceback.print_exc()
+                        responses[server['ip']] = ""
+                print "Got responses from %i pDNS servers." % (len(responses),)
+                if responses: #NEED TO REVIEW THIS
+                    self.update_poll_time(glbs[0].update_time.__str__())
             else:
-                print "== Worker Process: No data to process, up-to-date! " \
-                      "Polled at %s ==" % datetime.datetime.utcnow().\
-                    strftime("%Y-%m-%d %H:%M:%S")
+                print "== Worker Process: No glbs to process, up-to-date! " \
+                      "Polled at %s ==" % datetime.datetime.utcnow(). \
+                          strftime("%Y-%m-%d %H:%M:%S")
+            if len(responses) > 0:
+                self.response_queue.put(responses)
             print "=== Worker Process Tick - STOP ==="
-        session.close()
+            session.close()
 
     def send_data_to_pdns(self, glbs, server, new = False):
         command = ""
@@ -96,7 +124,7 @@ class WorkerProcess():
 
         if command: # Possibly needs a try/catch
             command += "OVER\n"
-            pDNS_socket = socket.create_connection((server, self.pdns_port))
+            pDNS_socket = socket.create_connection((server, self.pdns_port), 2)
             pDNS_socketFile = pDNS_socket.makefile("rw")
             pDNS_socketFile.write(command)
             pDNS_socketFile.flush()
