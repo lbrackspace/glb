@@ -108,7 +108,8 @@ class WorkerProcess():
 
     def send_data_to_pdns(self, glbs, server, new = False):
         command = ""
-
+        if new:
+            command += self.write_soa()
         for glb in glbs: # Possibly needs a try/catch within loop to allow
         # processing to continue
             update_type = glb.update_type
@@ -145,6 +146,10 @@ class WorkerProcess():
             node_list.append('%s-%s-%s-%s' % (n.ip_type.split('IPV')[1], 30, n.ip_address,
                                           n.weight))
         return "SNAPSHOT %s %s\n" % (glb.fqdn, ' '.join(node_list))
+
+    def write_soa(self):
+        return "SET_SOA glb.rackspace.com ns1.rackspace.net. root.rackspace" \
+               ".net. 2013102907 28800 14400 3600000 300\n"
 
     def process_response(self, pDNS_socketFile):
         ret = ""
