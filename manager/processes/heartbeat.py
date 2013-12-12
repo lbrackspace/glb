@@ -36,7 +36,7 @@ class HeartbeatProcess():
 
     def auto_negotiate(self):
         if self.priority.value == "A":
-            time.sleep(random.uniform(0,2))
+            time.sleep(random.uniform(1,3))
         with self.priority.get_lock():
             auto_add_heartbeat = {}
             #auto_add_pdns = {}
@@ -72,7 +72,7 @@ class HeartbeatProcess():
                     if self.priority.value != 'A' and old_p == 'M':
                         print "Old master dropped, autonegotiating..."
                         self.priority.value = 'A'
-                        self.auto_negotiate()
+                        #self.auto_negotiate()
                         return
 
             if self.priority.value == 'A':
