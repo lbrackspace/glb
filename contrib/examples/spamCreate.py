@@ -23,14 +23,24 @@ for num in range(0, args.count):
         "algorithm": "RANDOM",
         "nodes": [
             { 
-                "ip_address": "10.1.1.1",
+                "ip_address": "10.1.1.2",
                 "ip_type": "IPV4",
-                "type": "PASSIVE",
+                "type": "ACTIVE",
                 "monitor": { 
                     "interval": "30",
-                    "threshold": "70"
+                    "threshold": "2"
+                }
+            },
+            {
+                "ip_address": "10.1.1.3",
+                "ip_type": "IPV4",
+                "type": "ACTIVE",
+                "monitor": { 
+                    "interval": "30",
+                    "threshold": "2"
                 }
             }
+
         ]
     }
 }
