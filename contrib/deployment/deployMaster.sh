@@ -7,15 +7,15 @@ function setup {
         case $debian_version in
                 wheezy)
                         echo "Detected distribution: Debian $debian_version, proceeding with deployment."
-                        extra_packages="percona-server-5.6"
+                        extra_packages="percona-server-server-5.6"
                         ;;
                 raring | quantal | precise | saucy)
                         echo "Detected distribution: Ubuntu $debian_version, proceeding with deployment."
-                        extra_packages="percona-server-5.6 libssl-dev"
+                        extra_packages="percona-server-server-5.6 libssl-dev"
                         ;;
                 squeeze)
                         echo "Detected distribution: Debian $debian_version, which is unsupported."
-                        extra_packages="percona-server-5.6"
+                        extra_packages="percona-server-server-5.6"
                         return 1
                         ;;
                 lucid)
@@ -57,7 +57,7 @@ function setup {
 	echo " done."
 
 	echo -n "Deploying files to /var/www/glb and setting permissions..."
-	mkdir /var/www/glb
+	mkdir -p /var/www/glb
 	cp -r * /var/www/glb/
         cp contrib/deployment/glb.fcgi /var/www/glb/
 	cp contrib/config/example.config.cfg /var/www/glb/config.cfg

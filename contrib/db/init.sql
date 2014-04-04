@@ -1,4 +1,6 @@
 CREATE DATABASE glb;
+GRANT USAGE ON *.* TO 'glb'@'%' IDENTIFIED BY 'pass1234';
+GRANT ALL PRIVILEGES ON glb.* TO 'glb'@'%';
 GRANT USAGE ON *.* TO 'glb'@'localhost' IDENTIFIED BY 'pass1234';
 GRANT ALL PRIVILEGES ON glb.* TO 'glb'@'localhost';
 FLUSH PRIVILEGES;
