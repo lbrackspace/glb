@@ -15,11 +15,13 @@ function setup {
                         ;;
                 squeeze)
                         echo "Detected distribution: Debian $debian_version, which is unsupported."
+                        echo "This script must be run on a Debian 7 (Wheezy) or Ubuntu 12.04+ (Precise or later)."
                         extra_packages=""
                         return 1
                         ;;
                 lucid)
                         echo "Detected distribution: Ubuntu $debian_version, which is unsupported."
+                        echo "This script must be run on a Debian 7 (Wheezy) or Ubuntu 12.04+ (Precise or later)."
                         #extra_packages="libssl-dev"
                         return 1
                         ;;
@@ -68,10 +70,12 @@ function setupServer {
                         ;;
                 squeeze)
                         echo "Debian $debian_version is unsupported."
+                        echo "This script must be run on a Debian 7 (Wheezy) or Ubuntu 12.04+ (Precise or later)."
                         return 1
                         ;;
                 lucid)
                         echo "Ubuntu $debian_version is unsupported."
+                        echo "This script must be run on a Debian 7 (Wheezy) or Ubuntu 12.04+ (Precise or later)."
                         return 1
                         ;;
                 *)
