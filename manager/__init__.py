@@ -52,8 +52,9 @@ class Manager():
             self.other_servers = {}
             servers = config.get('manager', 'other_servers')
             for s in servers.split(','):
-                self.other_servers[s.strip()] = {'ip': s.strip(),
-                                                 'priority': 'D'}
+                if s != "":
+                    self.other_servers[s.strip()] = {'ip': s.strip(),
+                                                     'priority': 'D'}
         except:
             pass
         try:
